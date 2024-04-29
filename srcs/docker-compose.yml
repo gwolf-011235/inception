@@ -1,0 +1,19 @@
+services:
+  nginx:
+    build: ./requirements/nginx/
+    ports:
+      - "443:443"
+    volumes:
+      - type: bind
+        source: ./requirements/nginx/conf/
+        target: /etc/nginx
+    networks:
+      - inception
+  wordpress:
+    build: ./requirements/wordpress/
+    networks:
+      - inception
+
+networks:
+  inception:   
+
