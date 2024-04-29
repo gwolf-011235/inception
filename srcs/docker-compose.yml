@@ -1,19 +1,53 @@
 services:
   nginx:
+    container_name: nginx
     build: ./requirements/nginx/
+    depends_on:
+      - wp-php
+      - mariadb
     ports:
       - "443:443"
     volumes:
+      - wordpress:/var/www/html
       - type: bind
         source: ./requirements/nginx/conf/
         target: /etc/nginx
     networks:
       - inception
-  wordpress:
+  wp-php:
+    container_name: wp-php
     build: ./requirements/wordpress/
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress:/var/www/html
+      - type: bind
+        source: ./requirements/wordpress/conf/
+        target: /etc/php/8.2/fpm/pool.d/
+      - type: bind
+        source: ./requirements/wordpress/tools/
+        target: /tools/
+    networks:
+      - inception
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    volumes:
+      - mariadb:/var/lib/mysql
+      - type: bind
+        source: ./requirements/mariadb/conf
+        target: /etc/mysql/mariadb.conf.d/
+      - type: bind
+        source: ./requirements/mariadb/tools
+        target: /tools/
     networks:
       - inception
 
 networks:
   inception:   
 
+volumes:
+  wordpress:
+    name: wordpress
+  mariadb:
+    name: mariadb
