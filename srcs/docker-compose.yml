@@ -2,6 +2,21 @@ services:
   nginx:
     container_name: nginx
     build: ./requirements/nginx/
+    init: true
+    configs:
+      - source: nginx_config
+        target: /etc/nginx/nginx.conf
+        mode: 0440
+      - source: nginx_sites_available
+        target: /etc/nginx/sites-available/default
+        mode: 0440
+    secrets:
+      - source: server-certificate
+        target: site.crt
+        mode: 0440
+      - source: server-key
+        target: site.key
+        mode: 0440
     depends_on:
       - wp-php
       - mariadb
@@ -9,14 +24,13 @@ services:
       - "443:443"
     volumes:
       - wordpress:/var/www/html
-      - type: bind
-        source: ./requirements/nginx/conf/
-        target: /etc/nginx
     networks:
       - inception
+
   wp-php:
     container_name: wp-php
     build: ./requirements/wordpress/
+    init: true
     depends_on:
       - mariadb
     volumes:
@@ -29,14 +43,18 @@ services:
         target: /tools/
     networks:
       - inception
+
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
+    init: true
+    configs:
+      - source: mariadb_config
+        target: /etc/mysql/mariadb.conf.d/50-server.cnf
+      - source: mariadb_init_db
+        target: /etc/mysql/mariadb.conf.d/init.sql
     volumes:
       - mariadb:/var/lib/mysql
-      - type: bind
-        source: ./requirements/mariadb/conf
-        target: /etc/mysql/mariadb.conf.d/
       - type: bind
         source: ./requirements/mariadb/tools
         target: /tools/
@@ -51,3 +69,19 @@ volumes:
     name: wordpress
   mariadb:
     name: mariadb
+
+configs:
+  nginx_config:
+    file: ./requirements/nginx/conf/nginx.conf
+  nginx_sites_available:
+    file: ./requirements/nginx/conf/default
+  mariadb_config:
+    file: ./requirements/mariadb/conf/50-server.cnf
+  mariadb_init_db:
+    file: ./requirements/mariadb/conf/init.sql
+
+secrets:
+  server-certificate:
+    file: ../secrets/site.crt
+  server-key:
+    file: ../secrets/site.key
