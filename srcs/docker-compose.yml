@@ -63,6 +63,7 @@ services:
 
 networks:
   inception:   
+    name: inception
 
 volumes:
   wordpress:
