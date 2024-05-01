@@ -68,8 +68,16 @@ networks:
 volumes:
   wordpress:
     name: wordpress
+    driver_opts:
+      type: "nfs"
+      o: 'bind'
+      device: /home/gwolf/data/wordpress
   mariadb:
     name: mariadb
+    driver_opts:
+      type: "nfs"
+      o: 'bind'
+      device: /home/gwolf/data/mariadb
 
 configs:
   nginx_config:
