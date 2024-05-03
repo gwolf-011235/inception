@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Generates dummy certificates. Copied from https://docs.docker.com/engine/swarm/configs/#advanced-example-use-configs-with-a-nginx-service
+# See https://docs.docker.com/engine/swarm/configs/#advanced-example-use-configs-with-a-nginx-service
 
+echo "Generating dummy certificates."
 echo "1/9 Generate a root key."
 openssl genrsa -out "root-ca.key" 4096
 
@@ -68,4 +69,5 @@ openssl x509 \
 # The site.csr and site.cnf files are not needed by the Nginx service, but you need them if you want to generate a new site certificate. Protect the root-ca.key file.
 
 # Succes
-echo "9/9 Success: Generated 'site.crt' and 'site.key'"
+echo "9/9 Success: Generated 'site.crt' and 'site.key'!"
+
