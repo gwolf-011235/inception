@@ -75,5 +75,6 @@ clean:
 fclean:
 	echo "$(RED)FULL CLEAN$(RESET)"
 	$(MAKE) clean
+	echo "$(RED)Prune docker system$(RESET)"
 	docker system prune -af
 
