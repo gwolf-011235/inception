@@ -43,6 +43,11 @@ services:
         target: /tools/
     networks:
       - inception
+    environment:
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_PASSWORD_FILE=${WORDPRESS_DB_PASSWORD_FILE}
+      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
 
   mariadb:
     container_name: mariadb
