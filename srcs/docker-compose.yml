@@ -1,4 +1,7 @@
+
+
 services:
+
   nginx:
     container_name: nginx
     build: ./requirements/nginx/
@@ -50,7 +53,10 @@ services:
 
   mariadb:
     container_name: mariadb
-    build: ./requirements/mariadb
+    build: 
+      context: ./requirements/mariadb/
+      args:
+        - MARIADB_VERSION=${MARIADB_VERSION}
     init: true
     configs:
       - source: mariadb_config
@@ -65,8 +71,9 @@ services:
     networks:
       - inception
     environment:
-      - MARIADB_ROOT_PASSWORD_FILE=${MARIADB_ROOT_PASSWORD_FILE}
+      - MARIADB_VERSION=${MARIADB_VERSION}
       - MARIADB_HOST=${MARIADB_HOST}
+      - MARIADB_ROOT_PASSWORD_FILE=${MARIADB_ROOT_PASSWORD_FILE}
       - MARIADB_WPUSER_PASSWORD_FILE=${MARIADB_WPUSER_PASSWORD_FILE}
       - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
