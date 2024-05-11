@@ -8,9 +8,8 @@ RUN apt-get update; \
 	mkdir -p /run/mysqld/
 
 COPY tools/docker-entrypoint.sh /usr/local/bin/
-COPY tools/install.sh /usr/local/bin/
 
-ENTRYPOINT ["docker_entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["mariadbd"]
 
