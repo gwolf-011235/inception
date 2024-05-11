@@ -1,7 +1,16 @@
 FROM debian:bookworm
 
-RUN apt-get update
-RUN apt-get install -y mariadb-server
-RUN mkdir /run/mysqld
+ARG MARIADB_VERSION=1:10.11.6-0+deb12u1
+ENV MARIADB_VERSION=${MARIADB_VERSION}
 
-CMD ["/tools/install.sh"]
+RUN apt-get update; \
+	apt-get install -y mariadb-server=${MARIADB_VERSION}; \
+	mkdir -p /run/mysqld/
+
+COPY tools/docker-entrypoint.sh /usr/local/bin/
+COPY tools/install.sh /usr/local/bin/
+
+ENTRYPOINT ["docker_entrypoint.sh"]
+
+CMD ["mariadbd"]
+

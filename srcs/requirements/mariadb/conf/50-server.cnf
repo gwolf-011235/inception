@@ -6,8 +6,6 @@
 [server]
 
 
-init_file = /etc/mysql/mariadb.conf.d/init.sql
-
 # this is only for the mysqld standalone daemon
 [mysqld]
 

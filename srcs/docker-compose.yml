@@ -6,17 +6,13 @@ services:
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
-        mode: 0440
       - source: nginx_sites_available
         target: /etc/nginx/sites-available/default
-        mode: 0440
     secrets:
       - source: server-certificate
         target: site.crt
-        mode: 0440
       - source: server-key
         target: site.key
-        mode: 0440
     depends_on:
       - wp-php
       - mariadb
@@ -43,11 +39,14 @@ services:
         target: /tools/
     networks:
       - inception
+    secrets:
+      - source: mariadb_wpuser_password
+        target: mariadb_wpuser_password
     environment:
       - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
-      - WORDPRESS_DB_PASSWORD_FILE=${WORDPRESS_DB_PASSWORD_FILE}
-      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+      - MARIADB_WPUSER_PASSWORD_FILE=${MARIADB_WPUSER_PASSWORD_FILE}
+      - MARIADB_HOST=${MARIADB_HOST}
 
   mariadb:
     container_name: mariadb
@@ -56,15 +55,21 @@ services:
     configs:
       - source: mariadb_config
         target: /etc/mysql/mariadb.conf.d/50-server.cnf
-      - source: mariadb_init_db
-        target: /etc/mysql/mariadb.conf.d/init.sql
+    secrets:
+      - source: mariadb_root_password
+        target: mariadb_root_password 
+      - source: mariadb_wpuser_password
+        target: mariadb_wpuser_password
     volumes:
       - mariadb:/var/lib/mysql
-      - type: bind
-        source: ./requirements/mariadb/tools
-        target: /tools/
     networks:
       - inception
+    environment:
+      - MARIADB_ROOT_PASSWORD_FILE=${MARIADB_ROOT_PASSWORD_FILE}
+      - MARIADB_HOST=${MARIADB_HOST}
+      - MARIADB_WPUSER_PASSWORD_FILE=${MARIADB_WPUSER_PASSWORD_FILE}
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
 
 networks:
   inception:   
@@ -91,11 +96,14 @@ configs:
     file: ./requirements/nginx/conf/default
   mariadb_config:
     file: ./requirements/mariadb/conf/50-server.cnf
-  mariadb_init_db:
-    file: ./requirements/mariadb/conf/init.sql
 
 secrets:
   server-certificate:
     file: ../secrets/site.crt
   server-key:
     file: ../secrets/site.key
+  mariadb_root_password:
+    file: ../secrets/mariadb_root_password.txt
+  mariadb_wpuser_password:
+    file: ../secrets/mariadb_wpuser_password.txt
+
