@@ -11,21 +11,17 @@ mariadb_note() {
 	mariadb_log Note "$@"
 }
 
-mariadb_warn() {
-	mariadb_log Warn "$@" >&2
-}
-
 mariadb_error() {
 	mariadb_log ERROR "$@" >&2
 	exit 1
 }
 
-mariadb_note "Entrypoint of mariadb started"
+mariadb_note "Running mariadb docker-entrypoint"
 
-
-# check if WORDPRESS_DB_NAME has been setup
+# Check if container is set up
 if [ ! -d /var/lib/mysql/$WORDPRESS_DB_NAME ]; then
 	mariadb_note "Container mariadb is not set up, setting up now"
+	mariadb_note "Temp startup server"
 	mariadbd --skip-networking &
 	MARIADB_PID=$!
 	mariadb_note "Wait for server startup"
@@ -37,7 +33,6 @@ if [ ! -d /var/lib/mysql/$WORDPRESS_DB_NAME ]; then
 	done
 	if [ "$i" = 0 ]; then
 		mariadb_error "Unable to start server."
-		exit 1;
 	fi
 	
 	mariadb_note "Setting root password"

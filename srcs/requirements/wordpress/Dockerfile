@@ -22,6 +22,8 @@ RUN mkdir -p /var/www/html; \
 
 COPY ./tools/docker-entrypoint.sh /usr/local/bin/
 
+WORKDIR /var/www/html/
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["php-fpm8.2", "-F"]

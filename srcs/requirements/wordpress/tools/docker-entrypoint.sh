@@ -1,36 +1,40 @@
 #!/bin/bash
+set -eo pipefail
 
-if [ -x /usr/local/bin/wp ]
-then
-	echo "Found Wordpress CLI in /usr/local/bin"
-else
-	echo "Wordpress CLI not found - try downloading"
-	curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-	chmod +x wp-cli.phar
-	mv wp-cli.phar /usr/local/bin/wp
-fi
+# logging functions
+wp-php_log() {
+	local type="$1"; shift
+	printf '%s [%s] [Entrypoint]: %s\n' "$(date --rfc-3339=seconds)" "$type" "$*"
+}
 
-cd /var/www/html
+wp-php_note() {
+	wp-php_log Note "$@"
+}
 
-if ! wp core is-installed --allow-root; then
-	echo "Wordpress is not installed. Let's try installing it."
-	wp core download --allow-root
+wp-php_note "Running wp-php docker-entrypoint"
+
+# Check if container is set up
+if ! wp core is-installed 2>/dev/null; then
+	wp-php_note "Wordpress is not installed. Let's try installing it."
+	wp core download
 	MARIADB_WPUSER_PASSWORD="$(< $MARIADB_WPUSER_PASSWORD_FILE)"
-	wp config create --allow-root \
+	wp config create \
 		--dbname=${WORDPRESS_DB_NAME} \
 		--dbuser=${WORDPRESS_DB_USER} \
 		--dbpass=${MARIADB_WPUSER_PASSWORD} \
 		--dbhost=${MARIADB_HOST}
-	wp core install --allow-root \
+	wp core install \
 		--url=localhost \
 		--title=inception \
 		--admin_user=admin \
 		--admin_password=admin \
 		--admin_email=admin@admin.com
+	wp theme install neve --activate
 else
-	"WP is installed."
+	wp-php_note "Wordpress is installed."
 	wp core verify-checksums
 fi
 
+wp-php_note "Executing command '$@'"
 exec "$@"
 
