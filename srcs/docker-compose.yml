@@ -27,7 +27,9 @@ services:
     ports:
       - "443:443"
     volumes:
-      - wordpress:/var/www/html
+      - type: bind
+        source: /home/gwolf/data/wordpress
+        target: /var/www/html
     networks:
       - inception
 
@@ -42,14 +44,13 @@ services:
     depends_on:
       - mariadb
     user: ${CURRENT_UID}:${CURRENT_GID}
+    configs:
+      - source: fpm_config
+        target: /etc/php/8.2/fpm/pool.d/www.conf
     volumes:
-      - wordpress:/var/www/html
       - type: bind
-        source: ./requirements/wordpress/conf/
-        target: /etc/php/8.2/fpm/pool.d/
-      - type: bind
-        source: ./requirements/wordpress/tools/
-        target: /tools/
+        source: /home/gwolf/data/wordpress
+        target: /var/www/html
     networks:
       - inception
     secrets:
@@ -81,7 +82,9 @@ services:
       - source: mariadb_wpuser_password
         target: mariadb_wpuser_password
     volumes:
-      - mariadb:/var/lib/mysql
+      - type: bind
+        source: /home/gwolf/data/mariadb
+        target: /var/lib/mysql
     networks:
       - inception
     environment:
@@ -96,20 +99,6 @@ networks:
   inception:   
     name: inception
 
-volumes:
-  wordpress:
-    name: wordpress
-    driver_opts:
-      type: "nfs"
-      o: 'bind'
-      device: /home/gwolf/data/wordpress
-  mariadb:
-    name: mariadb
-    driver_opts:
-      type: "nfs"
-      o: 'bind'
-      device: /home/gwolf/data/mariadb
-
 configs:
   nginx_config:
     file: ./requirements/nginx/conf/nginx.conf
@@ -117,6 +106,8 @@ configs:
     file: ./requirements/nginx/conf/default
   mariadb_config:
     file: ./requirements/mariadb/conf/50-server.cnf
+  fpm_config:
+    file: ./requirements/wordpress/conf/www.conf
 
 secrets:
   server-certificate:
