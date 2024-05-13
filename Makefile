@@ -5,10 +5,11 @@ BLUE := \033[0;34m
 RESET := \033[0m
 
 INIT_FILE := .init
-DIR_DATA_WORDPRESS = /home/$$USER/data/wordpress
-DIR_DATA_MARIADB = /home/$$USER/data/mariadb
+DIR_DATA_WORDPRESS = $$HOME/data/wordpress
+DIR_DATA_MARIADB = $$HOME/data/mariadb
 DIR_SECRETS := ./secrets
 DIR_TOOLS := ./tools
+DIR_BACKUP := ./backup
 
 .SILENT:
 
@@ -74,7 +75,7 @@ clean_secret:
 .PHONY: clean_data
 clean_data:
 	echo "$(RED)Removing $(DIR_DATA_WORDPRESS) and $(DIR_DATA_MARIADB)$(RESET)"
-	sudo rm -fr $(DIR_DATA_WORDPRESS) $(DIR_DATA_MARIADB)
+	rm -fr $(DIR_DATA_WORDPRESS) $(DIR_DATA_MARIADB)
 	rm -fr $(INIT_FILE)
 
 .PHONY: clean_docker
@@ -89,4 +90,19 @@ fclean:
 	$(MAKE) clean_secret
 	$(MAKE) clean_docker
 	$(MAKE) clean_data
+
+.PHONY: backup
+backup:
+	echo "$(BLUE)Creating backup$(RESET)"
+	mkdir -p $(DIR_BACKUP)
+	tar -czf $(DIR_BACKUP)/wordpress.tar.gz -C / $(DIR_DATA_WORDPRESS)
+	tar -czf $(DIR_BACKUP)/mariadb.tar.gz -C / $(DIR_DATA_MARIADB)
+	tar -czf $(DIR_BACKUP)/secrets.tar.gz $(DIR_SECRETS)
+
+.PHONY: restore
+restore:
+	echo "$(BLUE)Restoring backup$(RESET)"
+	tar -xzvf $(DIR_BACKUP)/wordpress.tar.gz -C /
+	tar -xzvf $(DIR_BACKUP)/mariadb.tar.gz -C /
+	tar -xzvf $(DIR_BACKUP)/secrets.tar.gz
 
