@@ -1,5 +1,10 @@
 FROM debian:bookworm
 
+ARG CURRENT_UID=1000
+ARG CURRENT_GID=1000
+
+RUN groupadd -r -g $CURRENT_GID wpuser && useradd -r -g wpuser -u $CURRENT_UID --home /var/www/html/ wpuser 
+
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -y \
@@ -11,9 +16,13 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 	chmod +x wp-cli.phar; \
 	mv wp-cli.phar /usr/local/bin/wp;
 
+RUN mkdir -p /var/www/html; \
+	chown -R wpuser:wpuser /var/www/html /var/log; \
+	chmod 1777 /var/www/html /run/php/
+
 COPY ./tools/docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["php-fpm8.2", "-F", "-R"]
+CMD ["php-fpm8.2", "-F"]
 

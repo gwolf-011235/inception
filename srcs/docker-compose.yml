@@ -4,8 +4,13 @@ services:
 
   nginx:
     container_name: nginx
-    build: ./requirements/nginx/
+    build: 
+      context: ./requirements/nginx/
+      args:
+        - CURRENT_UID=${CURRENT_UID}
+        - CURRENT_GID=${CURRENT_GID}
     init: true
+    user: ${CURRENT_UID}:${CURRENT_GID}
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
@@ -50,14 +55,18 @@ services:
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
       - MARIADB_WPUSER_PASSWORD_FILE=${MARIADB_WPUSER_PASSWORD_FILE}
       - MARIADB_HOST=${MARIADB_HOST}
+      - WP_CLI_CACHE_DIR=/var/www/html/
 
   mariadb:
     container_name: mariadb
     build: 
       context: ./requirements/mariadb/
       args:
+        - CURRENT_UID=${CURRENT_UID}
+        - CURRENT_GID=${CURRENT_GID}
         - MARIADB_VERSION=${MARIADB_VERSION}
     init: true
+    user: ${CURRENT_UID}:${CURRENT_GID}
     configs:
       - source: mariadb_config
         target: /etc/mysql/mariadb.conf.d/50-server.cnf
