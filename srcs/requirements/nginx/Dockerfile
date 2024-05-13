@@ -27,6 +27,10 @@ RUN mkdir -p \
 
 COPY ./tools/docker-entrypoint.sh /usr/local/bin/
 
+WORKDIR /var/www/html
+
+USER nginx
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]

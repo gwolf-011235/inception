@@ -18,11 +18,13 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 
 RUN mkdir -p /var/www/html; \
 	chown -R wpuser:wpuser /var/www/html /var/log; \
-	chmod 1777 /var/www/html /run/php/
+	chmod 1777 /var/www/html /run/php/;
 
 COPY ./tools/docker-entrypoint.sh /usr/local/bin/
 
 WORKDIR /var/www/html/
+
+USER wpuser
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 

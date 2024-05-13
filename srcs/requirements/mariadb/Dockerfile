@@ -15,6 +15,10 @@ RUN mkdir -p /run/mysqld; \
 
 COPY tools/docker-entrypoint.sh /usr/local/bin/
 
+WORKDIR /var/lib/mysql/
+
+USER mysql
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["mariadbd"]

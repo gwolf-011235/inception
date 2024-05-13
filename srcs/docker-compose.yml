@@ -10,7 +10,6 @@ services:
         - CURRENT_UID=${CURRENT_UID}
         - CURRENT_GID=${CURRENT_GID}
     init: true
-    user: ${CURRENT_UID}:${CURRENT_GID}
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
@@ -43,7 +42,6 @@ services:
     init: true
     depends_on:
       - mariadb
-    user: ${CURRENT_UID}:${CURRENT_GID}
     configs:
       - source: fpm_config
         target: /etc/php/8.2/fpm/pool.d/www.conf
@@ -72,7 +70,6 @@ services:
         - CURRENT_GID=${CURRENT_GID}
         - MARIADB_VERSION=${MARIADB_VERSION}
     init: true
-    user: ${CURRENT_UID}:${CURRENT_GID}
     configs:
       - source: mariadb_config
         target: /etc/mysql/mariadb.conf.d/50-server.cnf
