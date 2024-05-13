@@ -33,10 +33,15 @@ services:
 
   wp-php:
     container_name: wp-php
-    build: ./requirements/wordpress/
+    build:
+      context: ./requirements/wordpress/
+      args:
+        - CURRENT_UID=${CURRENT_UID}
+        - CURRENT_GID=${CURRENT_GID}
     init: true
     depends_on:
       - mariadb
+    user: ${CURRENT_UID}:${CURRENT_GID}
     volumes:
       - wordpress:/var/www/html
       - type: bind
