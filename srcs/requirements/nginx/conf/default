@@ -63,6 +63,14 @@ server {
 		fastcgi_pass wp-php:9000;
 	}
 
+	## Adminer ##
+	location ~ ^/adminer(/.*$|$) {
+		fastcgi_index index.php;
+		include /etc/nginx/fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME /var/www/html/index.php;
+		fastcgi_pass adminer:9000;
+	}
+
 	# deny access to .htaccess files, if Apache's document root
 	# concurs with nginx's one
 	#
