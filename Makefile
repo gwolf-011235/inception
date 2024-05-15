@@ -4,7 +4,10 @@ RED := \033[0;31m
 BLUE := \033[0;34m
 RESET := \033[0m
 
+PROJECT_NAME := inception
+COMPOSE_FILE := ./srcs/docker-compose.yml
 INIT_FILE := .init
+
 DIR_DATA_WORDPRESS = $$HOME/data/wordpress
 DIR_DATA_MARIADB = $$HOME/data/mariadb
 DIR_SECRETS := ./secrets
@@ -45,26 +48,22 @@ secret:
 
 .PHONY: up
 up: .init_check
-	echo "$(GREEN)Starting up$(RESET)"
-	cd srcs && \
-	docker compose up -d
+	echo "$(GREEN)Starting containers$(RESET)"
+	docker compose -f $(COMPOSE_FILE) -p $(PROJECT_NAME) up -d
 
 .PHONY: log
 log:
-	cd srcs && \
-	docker compose logs -f
+	docker compose -p $(PROJECT_NAME) logs -f
 
 .PHONY: stop
 stop:
 	echo "$(RED)Stopping containers$(RESET)"
-	cd srcs && \
-	docker compose stop
+	docker compose -f $(COMPOSE_FILE) -p $(PROJECT_NAME) stop
 
 .PHONY: down
 down:
 	echo "$(RED)Stopping and removing containers$(RESET)"
-	cd srcs && \
-	docker compose down
+	docker compose -p $(PROJECT_NAME) down
 
 .PHONY: clean_secret
 clean_secret:
