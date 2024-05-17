@@ -37,7 +37,7 @@ help: # Print help on Makefile
 .PHONY: up
 up: .init_check # Start containers
 	echo "$(GREEN)Starting containers$(RESET)"
-	docker compose -f $(FILE_COMPOSE) -p $(PROJECT_NAME) up -d
+	docker compose -f $(COMPOSE_FILE) -p $(PROJECT_NAME) up -d
 
 .PHONY: log
 log: # Prints logs of running containers
@@ -51,7 +51,7 @@ stop: # Stops running containers
 .PHONY: down
 down: # Stops and removes containers
 	echo "$(RED)Stopping and removing containers$(RESET)"
-	docker compose -p $(PROJECT_NAME) down
+	docker compose -f $(COMPOSE_FILE) -p $(PROJECT_NAME) down
 
 .PHONY: .data
 .data:
@@ -118,6 +118,7 @@ restore: .backup_check # Restores existing backup
 .backup_check:
 	if [ ! -d $(DIR_BACKUP) ] || \
 		[ ! -e $(BACKUP_WORDPRESS) ] || [ ! -e $(BACKUP_MARIADB) ] || [ ! -e $(BACKUP_SECRETS) ] ; then \
-		$(error Backup does not exist! To create run make backup); \
+			echo "$(RED)Backup does not exist! To create run make backup$(RESET)"; \
+			exit 1; \
 	fi
 
