@@ -142,6 +142,17 @@ services:
     networks:
       - inception
 
+  ftp:
+    container_name: ftp
+    build: requirements/bonus/ftp
+    init: true
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    networks:
+      - inception
+    restart: always
+
 networks:
   inception:   
     name: inception
