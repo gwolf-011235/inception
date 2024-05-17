@@ -119,10 +119,28 @@ services:
       - source: adminer-index.php
         target: /var/www/html/index.php
     environment:
-      - ADMINER_DEFAULT_DRIVER=mysql
+      - ADMINER_DEFAULT_DRIVER=server
       - ADMINER_DEFAULT_DB=${WORDPRESS_DB_NAME}
       - ADMINER_DEFAULT_SERVER=${MARIADB_HOST}
       - ADMINER_DEFAULT_USERNAME=${WORDPRESS_DB_USER}
+
+  redis:
+    container_name: redis
+    build: ./requirements/bonus/redis
+    depends_on:
+      - wp-php
+    ports:
+     - '6379:6379'
+    restart: always
+    configs:
+      - source: redis_config
+        target: /etc/redis/redis.conf
+    volumes:
+      - type: bind
+        source: /home/gwolf/data/wordpress
+        target: /var/www/html
+    networks:
+      - inception
 
 networks:
   inception:   
@@ -141,6 +159,8 @@ configs:
     file: ./requirements/bonus/adminer/conf/www.conf
   adminer-index.php:
     file: ./requirements/bonus/adminer/conf/index.php
+  redis_config:
+    file: ./requirements/bonus/redis/conf/redis.conf
 
 secrets:
   server-certificate:
