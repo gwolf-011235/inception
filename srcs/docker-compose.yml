@@ -152,6 +152,13 @@ services:
     networks:
       - inception
     restart: always
+    configs:
+      - source: ftp_config
+        target: /etc/vsftpd.conf
+    volumes:
+      - type: bind
+        source: /home/gwolf/data/wordpress
+        target: /var/www/html
 
 networks:
   inception:   
@@ -172,6 +179,8 @@ configs:
     file: ./requirements/bonus/adminer/conf/index.php
   redis_config:
     file: ./requirements/bonus/redis/conf/redis.conf
+  ftp_config:
+    file: ./requirements/bonus/ftp/conf/vsftpd.conf
 
 secrets:
   server-certificate:
