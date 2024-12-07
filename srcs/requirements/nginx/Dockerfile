@@ -25,6 +25,8 @@ RUN mkdir -p \
 	chmod -R 1777 /etc/nginx/conf.d; \
 	touch /run/nginx.pid && chown -R nginx:nginx /run/nginx.pid
 
+RUN ln -sf /dev/stdout /var/log/nginx/access.log
+
 COPY ./tools/docker-entrypoint.sh /usr/local/bin/
 
 WORKDIR /var/www/html
