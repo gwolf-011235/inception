@@ -142,9 +142,15 @@ services:
 
   ftp:
     container_name: ftp
-    build: requirements/bonus/ftp
+    build:
+      context: ./requirements/bonus/ftp/
+      args:
+          - CURRENT_UID=${CURRENT_UID}
+          - CURRENT_GID=${CURRENT_GID}
+          - FTP_USER=${FTP_USER}
     init: true
     ports:
+      - "20:20"
       - "21:21"
       - "21100-21110:21100-21110"
     networks:
@@ -153,11 +159,12 @@ services:
     volumes:
       - type: bind
         source: /home/gwolf/data/wordpress
-        target: /var/www/html
+        target: /home/${FTP_USER}/
     secrets:
       - source: ftp_user_password
         target: ftp_user_password
     environment:
+      - FTP_USER=${FTP_USER}
       - FTP_USER_PASSWORD_FILE=${FTP_USER_PASSWORD_FILE}
 
 networks:
