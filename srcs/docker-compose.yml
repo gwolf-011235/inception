@@ -157,6 +157,11 @@ services:
       - type: bind
         source: /home/gwolf/data/wordpress
         target: /var/www/html
+    secrets:
+      - source: ftp_user_password
+        target: ftp_user_password
+    environment:
+      - FTP_USER_PASSWORD_FILE=${FTP_USER_PASSWORD_FILE}
 
 networks:
   inception:   
@@ -193,4 +198,6 @@ secrets:
     file: ../secrets/wordpress_admin_password.txt
   wordpress_user_password:
     file: ../secrets/wordpress_user_password.txt
+  ftp_user_password:
+    file: ../secrets/ftp_user_password.txt
 
