@@ -4,7 +4,7 @@ services:
 
   nginx:
     container_name: nginx
-    build: 
+    build:
       context: ./requirements/nginx/
       args:
         - CURRENT_UID=${CURRENT_UID}
@@ -75,7 +75,7 @@ services:
 
   mariadb:
     container_name: mariadb
-    build: 
+    build:
       context: ./requirements/mariadb/
       args:
         - CURRENT_UID=${CURRENT_UID}
@@ -87,7 +87,7 @@ services:
         target: /etc/mysql/mariadb.conf.d/50-server.cnf
     secrets:
       - source: mariadb_root_password
-        target: mariadb_root_password 
+        target: mariadb_root_password
       - source: mariadb_wpuser_password
         target: mariadb_wpuser_password
     volumes:
@@ -150,9 +150,6 @@ services:
     networks:
       - inception
     restart: always
-    configs:
-      - source: ftp_config
-        target: /etc/vsftpd.conf
     volumes:
       - type: bind
         source: /home/gwolf/data/wordpress
@@ -164,7 +161,7 @@ services:
       - FTP_USER_PASSWORD_FILE=${FTP_USER_PASSWORD_FILE}
 
 networks:
-  inception:   
+  inception:
     name: inception
 
 configs:
