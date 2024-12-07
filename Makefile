@@ -92,7 +92,7 @@ clean_data: # Cleans data directories
 clean_doc: # Removes docker images and build cache
 	echo "$(RED)Prune docker system$(RESET)"
 	docker system prune -af
-	
+
 .PHONY: fclean
 fclean: down clean_sec clean_data clean_doc # Runs all Clean targets
 	echo "$(RED)FULL CLEAN DONE$(RESET)"
