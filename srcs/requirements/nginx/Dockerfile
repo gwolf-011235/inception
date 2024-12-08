@@ -26,6 +26,7 @@ RUN mkdir -p \
 	touch /run/nginx.pid && chown -R nginx:nginx /run/nginx.pid
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
+RUN ln -sf /dev/stdout /var/log/nginx/error.log
 
 COPY ./tools/docker-entrypoint.sh /usr/local/bin/
 
