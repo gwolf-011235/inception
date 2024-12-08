@@ -55,8 +55,6 @@ if [ ! -e index.php ] && [ ! -e wp-includes/version.php ]; then
 		--user_pass=${WORDPRESS_USER_PASSWORD}
 	unset WORDPRESS_USER_PASSWORD
 
-	wp theme install blogcards --activate
-
 	wp plugin install redis-cache --activate
 	wp plugin update --all
 	wp redis enable
