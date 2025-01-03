@@ -10,8 +10,11 @@ RUN apt-get update; \
 	apt-get install -y mariadb-server=${MARIADB_VERSION};
 
 RUN mkdir -p /run/mysqld; \
+	# remove the default mysql directory
+	rm -rf /var/lib/mysql/; \
+	mkdir -p /var/lib/mysql/; \
 	chown -R mysql:mysql /var/lib/mysql /run/mysqld; \
-	chmod 1777 /run/mysqld;
+	chmod 755 /run/mysqld;
 
 COPY tools/docker-entrypoint.sh /usr/local/bin/
 
