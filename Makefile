@@ -1,5 +1,4 @@
 PROJECT_NAME := inception
-COMPOSE_FILE := ./srcs/docker-compose.yml
 
 #### COLORS ####
 
@@ -10,11 +9,19 @@ RESET := \033[0m
 
 #### DIRECTORIES ####
 
-DIR_DATA_WORDPRESS = $$HOME/data/wordpress
-DIR_DATA_MARIADB = $$HOME/data/mariadb
-DIR_SECRETS := ./secrets
-DIR_TOOLS := ./tools
-DIR_BACKUP := ./backup
+DIR_ROOT := $(shell pwd)
+DIR_SRCS := $(DIR_ROOT)/srcs
+DIR_SECRETS := $(DIR_ROOT)/secrets
+DIR_TOOLS := $(DIR_ROOT)/tools
+DIR_BACKUP := $(DIR_ROOT)/backup
+DIR_DATA := $(DIR_ROOT)/data
+DIR_DATA_WORDPRESS = $(DIR_DATA)/wordpress
+DIR_DATA_MARIADB = $(DIR_DATA)/mariadb
+
+#### FILES ####
+
+COMPOSE_FILE := $(DIR_SRCS)/docker-compose.yml
+ENV_FILE := $(DIR_SRCS)/.env
 
 #### BACKUP ####
 
@@ -28,7 +35,7 @@ BACKUP_SECRETS := $(DIR_BACKUP)/secrets.tar.gz
 
 .PHONY:
 help: # Print help on Makefile
-	@grep '^[^.#]\+:\s\+.*#' Makefile | \
+	grep '^[^.#]\+:\s\+.*#' Makefile | \
 	sed "s/\(.\+\):\s*\(.*\) #\s*\(.*\)/`printf "\033[93m"`\1`printf "\033[0m"`	\3 [\2]/" | \
 	expand -t20
 
@@ -64,11 +71,29 @@ down: # Stops and removes containers
 	echo "$(BLUE)Creating secrets$(RESET)"
 	mkdir -p $(DIR_SECRETS)
 	cd ./secrets && \
-	../$(DIR_TOOLS)/create_certificate.sh && \
-	../$(DIR_TOOLS)/create_passwords.sh
+	$(DIR_TOOLS)/create_certificate.sh && \
+	$(DIR_TOOLS)/create_passwords.sh
 
-.PHONY: init_check
+.PHONY: .env
+.env:
+	echo "$(BLUE)Appending directories to .env file$(RESET)"
+	echo "DIR_SECRET=$(DIR_SECRETS)" >> $(ENV_FILE)
+	echo "DIR_DATA_WORDPRESS=$(DIR_DATA_WORDPRESS)" >> $(ENV_FILE)
+	echo "DIR_DATA_MARIADB=$(DIR_DATA_MARIADB)" >> $(ENV_FILE)
+
+.PHONY: .init_check
 .init_check:
+	if [ ! -e $(ENV_FILE) ] ; then \
+		echo "$(RED)Missing $(ENV_FILE) file$(RESET)"; \
+		exit 1; \
+	fi
+	if [ ! -e $(COMPOSE_FILE) ] ; then \
+		echo "$(RED)Missing $(COMPOSE_FILE) file$(RESET)"; \
+		exit 1; \
+	fi
+	if ! grep -q "^DIR_SECRET=" $(ENV_FILE) ; then \
+		$(MAKE) .env; \
+	fi
 	if [ ! -d $(DIR_DATA_WORDPRESS) ] || [ ! -d $(DIR_DATA_MARIADB) ] ; then \
 		$(MAKE) .data; \
 	fi
@@ -85,8 +110,8 @@ clean_sec: # Cleans Secret directory
 
 .PHONY: clean_data
 clean_data: # Cleans data directories
-	echo "$(RED)Removing $(DIR_DATA_WORDPRESS) and $(DIR_DATA_MARIADB)$(RESET)"
-	rm -fr $(DIR_DATA_WORDPRESS) $(DIR_DATA_MARIADB)
+	echo "$(RED)Removing $(DIR_DATA)$(RESET)"
+	rm -fr $(DIR_DATA)
 
 .PHONY: clean_doc
 clean_doc: # Removes docker images and build cache

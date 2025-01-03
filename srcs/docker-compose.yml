@@ -27,7 +27,7 @@ services:
       - "443:443"
     volumes:
       - type: bind
-        source: /home/gwolf/data/wordpress
+        source: ${DIR_DATA_WORDPRESS}
         target: /var/www/html
     networks:
       - inception
@@ -47,7 +47,7 @@ services:
         target: /etc/php/8.2/fpm/pool.d/www.conf
     volumes:
       - type: bind
-        source: /home/gwolf/data/wordpress
+        source: ${DIR_DATA_WORDPRESS}
         target: /var/www/html
     networks:
       - inception
@@ -70,7 +70,7 @@ services:
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
       - MARIADB_WPUSER_PASSWORD_FILE=${MARIADB_WPUSER_PASSWORD_FILE}
       - MARIADB_HOST=${MARIADB_HOST}
-      - WP_CLI_CACHE_DIR=/var/www/html/
+      - WP_CLI_CACHE_DIR=${WP_CLI_CACHE_DIR}
       - DOMAIN_NAME=${DOMAIN_NAME}
 
   mariadb:
@@ -92,7 +92,7 @@ services:
         target: mariadb_wpuser_password
     volumes:
       - type: bind
-        source: /home/gwolf/data/mariadb
+        source: ${DIR_DATA_MARIADB}
         target: /var/lib/mysql
     networks:
       - inception
@@ -135,7 +135,7 @@ services:
         target: /etc/redis/redis.conf
     volumes:
       - type: bind
-        source: /home/gwolf/data/wordpress
+        source: ${DIR_DATA_WORDPRESS}
         target: /var/www/html
     networks:
       - inception
@@ -148,6 +148,8 @@ services:
           - CURRENT_UID=${CURRENT_UID}
           - CURRENT_GID=${CURRENT_GID}
           - FTP_USER=${FTP_USER}
+    depends_on:
+      - wp-php
     init: true
     ports:
       - "20:20"
@@ -158,7 +160,7 @@ services:
     restart: always
     volumes:
       - type: bind
-        source: /home/gwolf/data/wordpress
+        source: ${DIR_DATA_WORDPRESS}
         target: /home/${FTP_USER}/
     secrets:
       - source: ftp_user_password
@@ -191,17 +193,17 @@ configs:
 
 secrets:
   server-certificate:
-    file: ../secrets/site.crt
+    file: ${DIR_SECRET}/site.crt
   server-key:
-    file: ../secrets/site.key
+    file: ${DIR_SECRET}/site.key
   mariadb_root_password:
-    file: ../secrets/mariadb_root_password.txt
+    file: ${DIR_SECRET}/mariadb_root_password.txt
   mariadb_wpuser_password:
-    file: ../secrets/mariadb_wpuser_password.txt
+    file: ${DIR_SECRET}/mariadb_wpuser_password.txt
   wordpress_admin_password:
-    file: ../secrets/wordpress_admin_password.txt
+    file: ${DIR_SECRET}/wordpress_admin_password.txt
   wordpress_user_password:
-    file: ../secrets/wordpress_user_password.txt
+    file: ${DIR_SECRET}/wordpress_user_password.txt
   ftp_user_password:
-    file: ../secrets/ftp_user_password.txt
+    file: ${DIR_SECRET}/ftp_user_password.txt
 
