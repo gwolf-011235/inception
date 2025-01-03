@@ -14,7 +14,8 @@ DIR_SRCS := $(DIR_ROOT)/srcs
 DIR_SECRETS := $(DIR_ROOT)/secrets
 DIR_TOOLS := $(DIR_ROOT)/tools
 DIR_BACKUP := $(DIR_ROOT)/backup
-DIR_DATA := $(DIR_ROOT)/data
+DIR_HOME := /home/$(USER)
+DIR_DATA := $(DIR_HOME)/data
 DIR_DATA_WORDPRESS = $(DIR_DATA)/wordpress
 DIR_DATA_MARIADB = $(DIR_DATA)/mariadb
 
