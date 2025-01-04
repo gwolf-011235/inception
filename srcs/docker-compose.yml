@@ -158,6 +158,28 @@ services:
     environment:
       - FTP_USER=${FTP_USER}
       - FTP_USER_PASSWORD_FILE=${FTP_USER_PASSWORD_FILE}
+  cadvisor:
+      container_name: cadvisor
+      build:
+        context: ./requirements/bonus/cadvisor/
+        args:
+          - CURRENT_UID=${CURRENT_UID}
+          - CURRENT_GID=${CURRENT_GID}
+          - CADVISOR_VERSION=${CADVISOR_VERSION}
+      init: true
+      ports:
+        - 8080:8080
+      networks:
+        - inception
+      restart: always
+      volumes:
+        - /:/rootfs:ro
+        - /var/run:/var/run:ro
+        - /sys:/sys:ro
+        - /var/lib/docker/:/var/lib/docker:ro
+        - /dev/disk/:/dev/disk:ro
+      devices:
+        - "/dev/kmsg:/dev/kmsg"
 
 networks:
   inception:
