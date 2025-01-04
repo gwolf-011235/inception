@@ -48,8 +48,8 @@ up: .init_check # Start containers
 	docker compose -f $(COMPOSE_FILE) -p $(PROJECT_NAME) up -d
 
 .PHONY: log
-log: # Prints logs of running containers
-	docker compose -p $(PROJECT_NAME) logs -f
+log: # Prints logs of running containers. Use SERVICE=service_name to specify a service
+	docker compose -p $(PROJECT_NAME) logs -f $(SERVICE)
 
 .PHONY: stop
 stop: # Stops running containers
