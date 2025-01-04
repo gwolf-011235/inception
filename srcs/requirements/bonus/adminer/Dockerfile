@@ -18,7 +18,7 @@ RUN mkdir -p /var/www/html; \
 
 RUN curl -L https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php -o /var/www/html/adminer.php;
 
-COPY ./tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 WORKDIR /var/www/html
 

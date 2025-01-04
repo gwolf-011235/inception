@@ -9,7 +9,7 @@ RUN apt-get update; \
 	apt-get install -y \
 		redis=5:7.0.15-1~deb12u1;
 
-COPY ./tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 

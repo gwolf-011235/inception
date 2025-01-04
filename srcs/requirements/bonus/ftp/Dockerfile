@@ -19,7 +19,7 @@ RUN mkdir -p \
 
 COPY --chown=root:root ./conf/vsftpd.conf /etc/vsftpd/vsftpd.conf
 COPY ./conf/vsftpd.virtual /etc/pam.d/vsftpd.virtual
-COPY ./tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 

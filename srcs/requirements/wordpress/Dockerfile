@@ -3,7 +3,7 @@ FROM debian:bookworm
 ARG CURRENT_UID=1000
 ARG CURRENT_GID=1000
 
-RUN groupadd -r -g $CURRENT_GID wpuser && useradd -r -g wpuser -u $CURRENT_UID --home /var/www/html/ wpuser 
+RUN groupadd -r -g $CURRENT_GID wpuser && useradd -r -g wpuser -u $CURRENT_UID --home /var/www/html/ wpuser
 
 RUN set -eux; \
 	apt-get update; \
@@ -20,7 +20,7 @@ RUN mkdir -p /var/www/html; \
 	chown -R wpuser:wpuser /var/www/html /var/log; \
 	chmod 1777 /var/www/html /run/php/;
 
-COPY ./tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 WORKDIR /var/www/html/
 

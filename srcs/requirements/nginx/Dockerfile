@@ -28,7 +28,7 @@ RUN mkdir -p \
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stdout /var/log/nginx/error.log
 
-COPY ./tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 WORKDIR /var/www/html
 

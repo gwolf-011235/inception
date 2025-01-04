@@ -11,7 +11,7 @@ RUN curl -L https://github.com/google/cadvisor/releases/download/${CADVISOR_VERS
 	-o /usr/local/bin/cadvisor && \
 	chmod +x /usr/local/bin/cadvisor
 
-COPY ./tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 

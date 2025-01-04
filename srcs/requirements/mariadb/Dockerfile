@@ -16,7 +16,7 @@ RUN mkdir -p /run/mysqld; \
 	chown -R mysql:mysql /var/lib/mysql /run/mysqld; \
 	chmod 755 /run/mysqld;
 
-COPY tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=0755 tools/docker-entrypoint.sh /usr/local/bin/
 
 WORKDIR /var/lib/mysql/
 
