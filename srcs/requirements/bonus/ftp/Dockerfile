@@ -15,10 +15,9 @@ RUN mkdir -p \
 		/var/run/vsftpd/empty/ \
 		/var/log/vsftpd/
 
-# RUN ln -sf /dev/stdout /var/log/vsftpd/vsftpd.log
 
+# Copy the configuration file with root owner and group
 COPY --chown=root:root ./conf/vsftpd.conf /etc/vsftpd/vsftpd.conf
-COPY ./conf/vsftpd.virtual /etc/pam.d/vsftpd.virtual
 COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]

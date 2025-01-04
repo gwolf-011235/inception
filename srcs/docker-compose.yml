@@ -144,6 +144,9 @@ services:
     networks:
       - inception
     restart: always
+    configs:
+      - source: ftp_config
+        target: /etc/pam.d/vsftpd.virtual
     volumes:
       - wordpress-data:/home/${FTP_USER}/
     secrets:
@@ -195,7 +198,7 @@ configs:
   redis_config:
     file: ./requirements/bonus/redis/conf/redis.conf
   ftp_config:
-    file: ./requirements/bonus/ftp/conf/vsftpd.conf
+    file: ./requirements/bonus/ftp/conf/vsftpd.virtual
 
 secrets:
   server-certificate:
