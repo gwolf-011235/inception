@@ -1,7 +1,6 @@
 
 
 services:
-
   nginx:
     container_name: nginx
     build:
@@ -29,7 +28,6 @@ services:
       - wordpress-data:/var/www/html
     networks:
       - inception
-
   wp-php:
     container_name: wp-php
     build:
@@ -68,7 +66,6 @@ services:
       - MARIADB_HOST=${MARIADB_HOST}
       - WP_CLI_CACHE_DIR=${WP_CLI_CACHE_DIR}
       - DOMAIN_NAME=${DOMAIN_NAME}
-
   mariadb:
     container_name: mariadb
     build:
@@ -97,7 +94,6 @@ services:
       - MARIADB_WPUSER_PASSWORD_FILE=${MARIADB_WPUSER_PASSWORD_FILE}
       - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
-
   adminer:
     container_name: adminer
     build: ./requirements/bonus/adminer/
@@ -117,7 +113,6 @@ services:
       - ADMINER_DEFAULT_DB=${WORDPRESS_DB_NAME}
       - ADMINER_DEFAULT_SERVER=${MARIADB_HOST}
       - ADMINER_DEFAULT_USERNAME=${WORDPRESS_DB_USER}
-
   redis:
     container_name: redis
     build: ./requirements/bonus/redis
@@ -131,7 +126,6 @@ services:
       - wordpress-data:/var/www/html
     networks:
       - inception
-
   ftp:
     container_name: ftp
     build:

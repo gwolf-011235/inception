@@ -15,4 +15,3 @@ adminer_note "Running adminer docker-entrypoint"
 
 adminer_note "Executing command '$@'"
 exec "$@"
-
