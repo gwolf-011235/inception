@@ -13,18 +13,21 @@ ftp_note() {
 
 ftp_note "Running ftp docker-entrypoint"
 
-# Create home dir and update vsftpd user db:
-ftp_note "Setup FTP user"
-FTP_USER_PASSWORD="$(< $FTP_USER_PASSWORD_FILE)"
-echo -e "${FTP_USER}\n${FTP_USER_PASSWORD}" > /etc/vsftpd/virtual_users.txt
-/usr/bin/db_load -T -t hash -f /etc/vsftpd/virtual_users.txt /etc/vsftpd/virtual_users.db
-chmod 600 /etc/vsftpd/virtual_users.db
-rm /etc/vsftpd/virtual_users.txt
+# Check if container is set up
+if [ ! -e /etc/vsftpd/init ]; then
+	ftp_note "Container ftp is not set up, setting up now"
+	ftp_note "Update vsftpd user db with ${FTP_USER}"
+	FTP_USER_PASSWORD="$(< $FTP_USER_PASSWORD_FILE)"
+	echo -e "${FTP_USER}\n${FTP_USER_PASSWORD}" > /etc/vsftpd/virtual_users.txt
+	db_load -T -t hash -f /etc/vsftpd/virtual_users.txt /etc/vsftpd/virtual_users.db
+	chmod 600 /etc/vsftpd/virtual_users.db
+	rm /etc/vsftpd/virtual_users.txt
+	touch /etc/vsftpd/init
 
-# Send logfile to stdout
-# touch /var/log/vsftpd/vsftpd.log
-# chown vsftpd:vsftpd /var/log/vsftpd/vsftpd.log
-# /usr/bin/ln -sf /dev/stdout /var/log/vsftpd/vsftpd.log
+	ftp_note "Send logfile to stdout"
+	touch /var/log/vsftpd/vsftpd.log
+	tail -f /var/log/vsftpd/vsftpd.log &
+fi
 
 ftp_note "Executing command '$@'"
 exec "$@"
