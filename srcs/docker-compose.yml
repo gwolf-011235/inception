@@ -4,7 +4,7 @@ services:
   nginx:
     container_name: nginx
     build:
-      context: ./requirements/nginx/
+      context: ${DIR_REQUIREMENTS}/nginx/
       args:
         - CURRENT_UID=${CURRENT_UID}
         - CURRENT_GID=${CURRENT_GID}
@@ -31,7 +31,7 @@ services:
   wp-php:
     container_name: wp-php
     build:
-      context: ./requirements/wordpress/
+      context: ${DIR_REQUIREMENTS}/wordpress/
       args:
         - CURRENT_UID=${CURRENT_UID}
         - CURRENT_GID=${CURRENT_GID}
@@ -69,7 +69,7 @@ services:
   mariadb:
     container_name: mariadb
     build:
-      context: ./requirements/mariadb/
+      context: ${DIR_REQUIREMENTS}/mariadb/
       args:
         - CURRENT_UID=${CURRENT_UID}
         - CURRENT_GID=${CURRENT_GID}
@@ -96,7 +96,7 @@ services:
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
   adminer:
     container_name: adminer
-    build: ./requirements/bonus/adminer/
+    build: ${DIR_REQUIREMENTS}/bonus/adminer/
     depends_on:
       - mariadb
     init: true
@@ -115,7 +115,7 @@ services:
       - ADMINER_DEFAULT_USERNAME=${WORDPRESS_DB_USER}
   redis:
     container_name: redis
-    build: ./requirements/bonus/redis
+    build: ${DIR_REQUIREMENTS}/bonus/redis
     depends_on:
       - wp-php
     restart: always
@@ -129,7 +129,7 @@ services:
   ftp:
     container_name: ftp
     build:
-      context: ./requirements/bonus/ftp/
+      context: ${DIR_REQUIREMENTS}/bonus/ftp/
       args:
           - CURRENT_UID=${CURRENT_UID}
           - CURRENT_GID=${CURRENT_GID}
@@ -158,7 +158,7 @@ services:
   cadvisor:
       container_name: cadvisor
       build:
-        context: ./requirements/bonus/cadvisor/
+        context: ${DIR_REQUIREMENTS}/bonus/cadvisor/
         args:
           - CURRENT_UID=${CURRENT_UID}
           - CURRENT_GID=${CURRENT_GID}
@@ -180,7 +180,7 @@ services:
   website:
     container_name: website
     build:
-      context: ./requirements/bonus/website/
+      context: ${DIR_REQUIREMENTS}/bonus/website/
       args:
         - CURRENT_UID=${CURRENT_UID}
         - CURRENT_GID=${CURRENT_GID}
@@ -196,7 +196,6 @@ services:
       - ${DIR_REQUIREMENTS}/bonus/website/:/var/www/html
     networks:
       - inception
-
 
 networks:
   inception:
