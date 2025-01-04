@@ -177,6 +177,26 @@ services:
         - /dev/disk/:/dev/disk:ro
       devices:
         - "/dev/kmsg:/dev/kmsg"
+  website:
+    container_name: website
+    build:
+      context: ./requirements/bonus/website/
+      args:
+        - CURRENT_UID=${CURRENT_UID}
+        - CURRENT_GID=${CURRENT_GID}
+    init: true
+    configs:
+      - source: website_config
+        target: /etc/nginx/nginx.conf
+      - source: website_sites_available
+        target: /etc/nginx/sites-available/default
+    depends_on:
+      - nginx
+    volumes:
+      - ${DIR_REQUIREMENTS}/bonus/website/:/var/www/html
+    networks:
+      - inception
+
 
 networks:
   inception:
@@ -199,6 +219,11 @@ configs:
     file: ${DIR_REQUIREMENTS}/bonus/redis/conf/redis.conf
   ftp_config:
     file: ${DIR_REQUIREMENTS}/bonus/ftp/conf/vsftpd.virtual
+  website_config:
+    file: ${DIR_REQUIREMENTS}/bonus/website/conf/nginx.conf
+  website_sites_available:
+    file: ${DIR_REQUIREMENTS}/bonus/website/conf/default
+
 
 secrets:
   server-certificate:
