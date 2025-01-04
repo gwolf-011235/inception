@@ -184,21 +184,21 @@ networks:
 
 configs:
   nginx_config:
-    file: ./requirements/nginx/conf/nginx.conf
+    file: ${DIR_REQUIREMENTS}/nginx/conf/nginx.conf
   nginx_sites_available:
-    file: ./requirements/nginx/conf/default
+    file: ${DIR_REQUIREMENTS}/nginx/conf/default
   mariadb_config:
-    file: ./requirements/mariadb/conf/50-server.cnf
+    file: ${DIR_REQUIREMENTS}/mariadb/conf/50-server.cnf
   fpm_config:
-    file: ./requirements/wordpress/conf/www.conf
+    file: ${DIR_REQUIREMENTS}/wordpress/conf/www.conf
   adminer_config:
-    file: ./requirements/bonus/adminer/conf/www.conf
+    file: ${DIR_REQUIREMENTS}/bonus/adminer/conf/www.conf
   adminer-index.php:
-    file: ./requirements/bonus/adminer/conf/index.php
+    file: ${DIR_REQUIREMENTS}/bonus/adminer/conf/index.php
   redis_config:
-    file: ./requirements/bonus/redis/conf/redis.conf
+    file: ${DIR_REQUIREMENTS}/bonus/redis/conf/redis.conf
   ftp_config:
-    file: ./requirements/bonus/ftp/conf/vsftpd.virtual
+    file: ${DIR_REQUIREMENTS}/bonus/ftp/conf/vsftpd.virtual
 
 secrets:
   server-certificate:

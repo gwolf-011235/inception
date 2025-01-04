@@ -11,6 +11,7 @@ RESET := \033[0m
 
 DIR_ROOT := $(shell pwd)
 DIR_SRCS := $(DIR_ROOT)/srcs
+DIR_REQUIREMENTS := $(DIR_SRCS)/requirements
 DIR_SECRETS := $(DIR_ROOT)/secrets
 DIR_TOOLS := $(DIR_ROOT)/tools
 DIR_BACKUP := $(DIR_ROOT)/backup
@@ -81,6 +82,7 @@ down: # Stops and removes containers
 	echo "DIR_SECRET=$(DIR_SECRETS)" >> $(ENV_FILE)
 	echo "DIR_DATA_WORDPRESS=$(DIR_DATA_WORDPRESS)" >> $(ENV_FILE)
 	echo "DIR_DATA_MARIADB=$(DIR_DATA_MARIADB)" >> $(ENV_FILE)
+	echo "DIR_REQUIREMENTS=$(DIR_REQUIREMENTS)" >> $(ENV_FILE)
 
 .PHONY: .init_check
 .init_check:
