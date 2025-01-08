@@ -20,7 +20,7 @@ RUN mkdir -p /var/www/html; \
 	chown -R adminer:adminer /var/www/html /var/log; \
 	chmod 1755 /var/www/html /run/php/;
 
-RUN curl -L https://github.com/vrana/adminer/releases/download/v${ADMINER_VERSION}/adminer-{ADMINER_VERSION}.php \
+RUN curl -L https://github.com/vrana/adminer/releases/download/v${ADMINER_VERSION}/adminer-${ADMINER_VERSION}.php \
 	-o /var/www/html/adminer.php;
 
 COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
