@@ -9,7 +9,7 @@ RESET := \033[0m
 
 #### USER CONFIG ####
 
-USER := $(shell whoami)
+USER_NAME := $(shell whoami)
 USER_UID := $(shell id -u)
 USER_GID := $(shell id -g)
 
@@ -94,7 +94,7 @@ config: # Prints the configuration of the project
 .env:
 	echo "$(BLUE)Updating .env file$(RESET)"
 	cp $(ENV_FILE) $(ENV_FILE).bak
-	sed -i 's/USER=#/USER=$(USER)/g' $(ENV_FILE)
+	sed -i 's/USER_NAME=#/USER_NAME=$(USER_NAME)/g' $(ENV_FILE)
 	sed -i 's/USER_UID=#/USER_UID=$(USER_UID)/g' $(ENV_FILE)
 	sed -i 's/USER_GID=#/USER_GID=$(USER_GID)/g' $(ENV_FILE)
 # Using '+' as separator to avoid conflicts with '/' in paths
