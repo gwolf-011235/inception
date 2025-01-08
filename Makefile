@@ -120,9 +120,11 @@ clean_sec: # Cleans Secret directory
 	rm -fr $(DIR_SECRETS)
 
 .PHONY: clean_data
-clean_data: # Cleans data directories
+clean_data: # Cleans data directories and docker volumes
 	echo "$(RED)Removing $(DIR_DATA)$(RESET)"
 	rm -fr $(DIR_DATA)
+	echo "$(RED)Removing docker volumes$(RESET)"
+	docker volume rm -f $(PROJECT_NAME)_wordpress_data $(PROJECT_NAME)_mariadb_data
 
 .PHONY: clean_doc
 clean_doc: # Removes docker images and build cache

@@ -28,7 +28,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - wordpress-data:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - inception
   wp-php:
@@ -50,7 +50,7 @@ services:
       - source: fpm_config
         target: /etc/php/8.2/fpm/pool.d/www.conf
     volumes:
-      - wordpress-data:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - inception
     secrets:
@@ -93,7 +93,7 @@ services:
       - source: mariadb_wpuser_password
         target: mariadb_wpuser_password
     volumes:
-      - mariadb-data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     networks:
       - inception
     environment:
@@ -146,7 +146,7 @@ services:
       - source: redis_config
         target: /etc/redis/redis.conf
     volumes:
-      - wordpress-data:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - inception
   ftp:
@@ -173,7 +173,7 @@ services:
       - source: ftp_config
         target: /etc/pam.d/vsftpd.virtual
     volumes:
-      - wordpress-data:/home/${FTP_USER}/
+      - wordpress_data:/home/${FTP_USER}/
     secrets:
       - source: ftp_user_password
         target: ftp_user_password
@@ -268,13 +268,13 @@ secrets:
     file: ${DIR_SECRET}/ftp_user_password.txt
 
 volumes:
-  wordpress-data:
+  wordpress_data:
     driver: local
     driver_opts:
       type: none
       device: ${DIR_DATA_WORDPRESS}
       o: bind
-  mariadb-data:
+  mariadb_data:
     driver: local
     driver_opts:
       type: none
