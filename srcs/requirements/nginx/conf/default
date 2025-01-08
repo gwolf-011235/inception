@@ -64,7 +64,7 @@ server {
 	}
 
 	## Adminer ##
-	location ~ ^/adminer(/.*$|$) {
+	location ~ ^/admin/adminer(/.*$|$) {
 		fastcgi_index index.php;
 		include /etc/nginx/fastcgi_params;
 		fastcgi_param SCRIPT_FILENAME /var/www/html/index.php;
@@ -83,7 +83,7 @@ server {
 	}
 
 	## Cadvisor ##
-	location  ~* /admin/cadvisor/.*$ {
+	location  ~ ^/admin/cadvisor/.*$ {
 		proxy_pass http://cadvisor:8080;
 	}
 
