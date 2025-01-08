@@ -23,7 +23,7 @@ if [ ! -d /var/lib/mysql/$WORDPRESS_DB_NAME ]; then
 	mariadb_note "Container mariadb is not set up, setting up now"
 
 	mariadb_note "Initializing database files"
-	mariadb-install-db --rpm --datadir=/var/lib/mysql --auth-root-authentication-method=normal --skip-test-db
+	mariadb-install-db --datadir=/var/lib/mysql --auth-root-authentication-method=normal --skip-test-db
 
 	mariadb_note "Temp startup server"
 	mariadbd --skip-networking &
@@ -38,7 +38,7 @@ if [ ! -d /var/lib/mysql/$WORDPRESS_DB_NAME ]; then
 	if [ "$i" = 0 ]; then
 		mariadb_error "Unable to start server."
 	fi
-	
+
 	mariadb_note "Create mysql user"
 	mariadb -u root <<-EOF
 		CREATE USER 'mysql'@'localhost' IDENTIFIED VIA unix_socket;
