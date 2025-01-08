@@ -155,9 +155,6 @@ services:
         - REDIS_VERSION=${REDIS_VERSION}
     init: true
     restart: always
-    depends_on:
-      wp-php:
-        condition: service_healthy
     configs:
       - source: redis_config
         target: /etc/redis/redis.conf
