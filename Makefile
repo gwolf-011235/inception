@@ -7,6 +7,12 @@ RED := \033[0;31m
 BLUE := \033[0;34m
 RESET := \033[0m
 
+#### USER CONFIG ####
+
+USER := $(shell whoami)
+USER_UID := $(shell id -u)
+USER_GID := $(shell id -g)
+
 #### DIRECTORIES ####
 
 DIR_ROOT := $(shell pwd)
@@ -86,11 +92,16 @@ config: # Prints the configuration of the project
 
 .PHONY: .env
 .env:
-	echo "$(BLUE)Appending directories to .env file$(RESET)"
-	echo "DIR_SECRET=$(DIR_SECRETS)" >> $(ENV_FILE)
-	echo "DIR_DATA_WORDPRESS=$(DIR_DATA_WORDPRESS)" >> $(ENV_FILE)
-	echo "DIR_DATA_MARIADB=$(DIR_DATA_MARIADB)" >> $(ENV_FILE)
-	echo "DIR_REQUIREMENTS=$(DIR_REQUIREMENTS)" >> $(ENV_FILE)
+	echo "$(BLUE)Updating .env file$(RESET)"
+	cp $(ENV_FILE) $(ENV_FILE).bak
+	sed -i 's/USER=#/USER=$(USER)/g' $(ENV_FILE)
+	sed -i 's/USER_UID=#/USER_UID=$(USER_UID)/g' $(ENV_FILE)
+	sed -i 's/USER_GID=#/USER_GID=$(USER_GID)/g' $(ENV_FILE)
+# Using '+' as separator to avoid conflicts with '/' in paths
+	sed -i 's+DIR_SECRET=#+DIR_SECRET=$(DIR_SECRETS)+g' $(ENV_FILE)
+	sed -i 's+DIR_DATA_WORDPRESS=#+DIR_DATA_WORDPRESS=$(DIR_DATA_WORDPRESS)+g' $(ENV_FILE)
+	sed -i 's+DIR_DATA_MARIADB=#+DIR_DATA_MARIADB=$(DIR_DATA_MARIADB)+g' $(ENV_FILE)
+	sed -i 's+DIR_REQUIREMENTS=#+DIR_REQUIREMENTS=$(DIR_REQUIREMENTS)+g' $(ENV_FILE)
 
 .PHONY: .init_check
 .init_check:
@@ -102,7 +113,7 @@ config: # Prints the configuration of the project
 		echo "$(RED)Missing $(COMPOSE_FILE) file$(RESET)"; \
 		exit 1; \
 	fi
-	if ! grep -q "^DIR_SECRET=" $(ENV_FILE) ; then \
+	if [ ! -e $(ENV_FILE).bak ] ; then \
 		$(MAKE) .env; \
 	fi
 	if [ ! -d $(DIR_DATA_WORDPRESS) ] || [ ! -d $(DIR_DATA_MARIADB) ] ; then \
@@ -132,12 +143,9 @@ clean_doc: # Removes docker images and build cache
 	docker system prune -af
 
 .PHONY: clean_env
-clean_env: # Removes directory entries from .env file
-	echo "$(RED)Removing directory entries from $(ENV_FILE)$(RESET)"
-	sed -i '/DIR_SECRET/d' $(ENV_FILE)
-	sed -i '/DIR_DATA_WORDPRESS/d' $(ENV_FILE)
-	sed -i '/DIR_DATA_MARIADB/d' $(ENV_FILE)
-	sed -i '/DIR_REQUIREMENTS/d' $(ENV_FILE)
+clean_env: # Restores .env from bak file
+	echo "$(RED)Restoring .env file$(RESET)"
+	mv $(ENV_FILE).bak $(ENV_FILE)
 
 .PHONY: fclean
 fclean: down clean_sec clean_data clean_env clean_doc # Runs all Clean targets

@@ -1,13 +1,11 @@
-
-
 services:
   nginx:
     container_name: nginx
     build:
       context: ${DIR_REQUIREMENTS}/nginx/
       args:
-        - CURRENT_UID=${CURRENT_UID}
-        - CURRENT_GID=${CURRENT_GID}
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
         - NGINX_VERSION=${NGINX_VERSION}
         - SSL_CERT_VERSION=${SSL_CERT_VERSION}
     init: true
@@ -36,8 +34,8 @@ services:
     build:
       context: ${DIR_REQUIREMENTS}/wordpress/
       args:
-        - CURRENT_UID=${CURRENT_UID}
-        - CURRENT_GID=${CURRENT_GID}
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
         - PHP_FPM_VERSION=${PHP_FPM_VERSION}
         - PHP_MYSQL_VERSION=${PHP_MYSQL_VERSION}
         - CURL_VERSION=${CURL_VERSION}
@@ -79,8 +77,8 @@ services:
     build:
       context: ${DIR_REQUIREMENTS}/mariadb/
       args:
-        - CURRENT_UID=${CURRENT_UID}
-        - CURRENT_GID=${CURRENT_GID}
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
         - MARIADB_VERSION=${MARIADB_VERSION}
     init: true
     restart: always
@@ -108,8 +106,8 @@ services:
     build:
       context: ${DIR_REQUIREMENTS}/bonus/adminer/
       args:
-        - CURRENT_UID=${CURRENT_UID}
-        - CURRENT_GID=${CURRENT_GID}
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
         - PHP_FPM_VERSION=${PHP_FPM_VERSION}
         - PHP_MYSQL_VERSION=${PHP_MYSQL_VERSION}
         - CURL_VERSION=${CURL_VERSION}
@@ -135,8 +133,8 @@ services:
     build:
       context: ${DIR_REQUIREMENTS}/bonus/redis
       args:
-        - CURRENT_UID=${CURRENT_UID}
-        - CURRENT_GID=${CURRENT_GID}
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
         - REDIS_VERSION=${REDIS_VERSION}
     init: true
     restart: always
@@ -154,11 +152,11 @@ services:
     build:
       context: ${DIR_REQUIREMENTS}/bonus/ftp/
       args:
-          - CURRENT_UID=${CURRENT_UID}
-          - CURRENT_GID=${CURRENT_GID}
-          - VSFTPD_VERSION=${VSFTPD_VERSION}
-          - DB_UTIL_VERSION=${DB_UTIL_VERSION}
-          - FTP_USER=${FTP_USER}
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
+        - VSFTPD_VERSION=${VSFTPD_VERSION}
+        - DB_UTIL_VERSION=${DB_UTIL_VERSION}
+        - FTP_USER=${FTP_USER}
     init: true
     restart: always
     depends_on:
@@ -181,33 +179,33 @@ services:
       - FTP_USER=${FTP_USER}
       - FTP_USER_PASSWORD_FILE=${FTP_USER_PASSWORD_FILE}
   cadvisor:
-      container_name: cadvisor
-      build:
-        context: ${DIR_REQUIREMENTS}/bonus/cadvisor/
-        args:
-          - CADVISOR_VERSION=${CADVISOR_VERSION}
-          - CURL_VERSION=${CURL_VERSION}
-      init: true
-      restart: always
-      ports:
-        - 8080:8080
-      networks:
-        - inception
-      volumes:
-        - /:/rootfs:ro
-        - /var/run:/var/run:ro
-        - /sys:/sys:ro
-        - /var/lib/docker/:/var/lib/docker:ro
-        - /dev/disk/:/dev/disk:ro
-      devices:
-        - "/dev/kmsg:/dev/kmsg"
+    container_name: cadvisor
+    build:
+      context: ${DIR_REQUIREMENTS}/bonus/cadvisor/
+      args:
+        - CADVISOR_VERSION=${CADVISOR_VERSION}
+        - CURL_VERSION=${CURL_VERSION}
+    init: true
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - inception
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - "/dev/kmsg:/dev/kmsg"
   website:
     container_name: website
     build:
       context: ${DIR_REQUIREMENTS}/nginx/
       args:
-        - CURRENT_UID=${CURRENT_UID}
-        - CURRENT_GID=${CURRENT_GID}
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
         - NGINX_VERSION=${NGINX_VERSION}
         - SSL_CERT_VERSION=${SSL_CERT_VERSION}
     init: true
@@ -249,7 +247,6 @@ configs:
     file: ${DIR_REQUIREMENTS}/bonus/website/conf/nginx.conf
   website_sites_available:
     file: ${DIR_REQUIREMENTS}/bonus/website/conf/default
-
 
 secrets:
   server-certificate:
