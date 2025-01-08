@@ -145,7 +145,9 @@ clean_doc: # Removes docker images and build cache
 .PHONY: clean_env
 clean_env: # Restores .env from bak file
 	echo "$(RED)Restoring .env file$(RESET)"
-	mv $(ENV_FILE).bak $(ENV_FILE)
+	if [ ! mv $(ENV_FILE).bak $(ENV_FILE) 2&> /dev/null ] ; then \
+		echo "$(RED)$(ENV_FILE).bak does not exist$(RESET)"; \
+	fi
 
 .PHONY: fclean
 fclean: down clean_sec clean_data clean_env clean_doc # Runs all Clean targets
