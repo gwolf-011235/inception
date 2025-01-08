@@ -190,10 +190,12 @@ services:
   website:
     container_name: website
     build:
-      context: ${DIR_REQUIREMENTS}/bonus/website/
+      context: ${DIR_REQUIREMENTS}/nginx/
       args:
         - CURRENT_UID=${CURRENT_UID}
         - CURRENT_GID=${CURRENT_GID}
+        - NGINX_VERSION=${NGINX_VERSION}
+        - SSL_CERT_VERSION=${SSL_CERT_VERSION}
     init: true
     restart: always
     depends_on:
