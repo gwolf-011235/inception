@@ -4,6 +4,7 @@ services:
     build:
       context: ${DIR_REQUIREMENTS}/nginx/
       args:
+        - USER_NAME=${USER_NAME}
         - USER_UID=${USER_UID}
         - USER_GID=${USER_GID}
         - NGINX_VERSION=${NGINX_VERSION}
