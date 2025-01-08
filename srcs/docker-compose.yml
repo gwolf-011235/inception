@@ -71,7 +71,7 @@ services:
       - WORDPRESS_USER_MAIL=${WORDPRESS_USER_MAIL}
       - WORDPRESS_USER_PASSWORD_FILE=${WORDPRESS_USER_PASSWORD_FILE}
       - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
-      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_USER=${USER_NAME}
       - MARIADB_WPUSER_PASSWORD_FILE=${MARIADB_WPUSER_PASSWORD_FILE}
       - MARIADB_HOST=${MARIADB_HOST}
       - WP_CLI_CACHE_DIR=${WP_CLI_CACHE_DIR}
@@ -110,7 +110,7 @@ services:
       - MARIADB_ROOT_PASSWORD_FILE=${MARIADB_ROOT_PASSWORD_FILE}
       - MARIADB_WPUSER_PASSWORD_FILE=${MARIADB_WPUSER_PASSWORD_FILE}
       - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
-      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_USER=${USER_NAME}
     healthcheck:
       test: ["CMD", "healthcheck.sh"]
       start_period: 5s
@@ -122,6 +122,7 @@ services:
     build:
       context: ${DIR_REQUIREMENTS}/bonus/adminer/
       args:
+        - USERNAME=${USER_NAME}
         - USER_UID=${USER_UID}
         - USER_GID=${USER_GID}
         - PHP_FPM_VERSION=${PHP_FPM_VERSION}
@@ -144,12 +145,13 @@ services:
       - ADMINER_DEFAULT_DRIVER=server
       - ADMINER_DEFAULT_DB=${WORDPRESS_DB_NAME}
       - ADMINER_DEFAULT_SERVER=${MARIADB_HOST}
-      - ADMINER_DEFAULT_USERNAME=${WORDPRESS_DB_USER}
+      - ADMINER_DEFAULT_USERNAME=${USER_NAME}
   redis:
     container_name: redis
     build:
       context: ${DIR_REQUIREMENTS}/bonus/redis
       args:
+        - USER_NAME=${USER_NAME}
         - USER_UID=${USER_UID}
         - USER_GID=${USER_GID}
         - REDIS_VERSION=${REDIS_VERSION}
@@ -167,11 +169,11 @@ services:
     build:
       context: ${DIR_REQUIREMENTS}/bonus/ftp/
       args:
+        - USER_NAME=${USER_NAME}
         - USER_UID=${USER_UID}
         - USER_GID=${USER_GID}
         - VSFTPD_VERSION=${VSFTPD_VERSION}
         - DB_UTIL_VERSION=${DB_UTIL_VERSION}
-        - FTP_USER=${FTP_USER}
     init: true
     restart: always
     depends_on:
