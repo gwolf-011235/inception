@@ -69,7 +69,7 @@ ps: # Lists running containers from the project
 .PHONY: config
 config: # Prints the configuration of the project
 	$(SILENT)docker compose -f $(COMPOSE_FILE) -p $(PROJECT_NAME) config
-	
+
 .PHONY: .data
 .data:
 	echo "$(BLUE)Creating data directories$(RESET)"
@@ -131,8 +131,16 @@ clean_doc: # Removes docker images and build cache
 	echo "$(RED)Prune docker system$(RESET)"
 	docker system prune -af
 
+.PHONY: clean_env
+clean_env: # Removes directory entries from .env file
+	echo "$(RED)Removing directory entries from $(ENV_FILE)$(RESET)"
+	sed -i '/DIR_SECRET/d' $(ENV_FILE)
+	sed -i '/DIR_DATA_WORDPRESS/d' $(ENV_FILE)
+	sed -i '/DIR_DATA_MARIADB/d' $(ENV_FILE)
+	sed -i '/DIR_REQUIREMENTS/d' $(ENV_FILE)
+
 .PHONY: fclean
-fclean: down clean_sec clean_data clean_doc # Runs all Clean targets
+fclean: down clean_sec clean_data clean_env clean_doc # Runs all Clean targets
 	echo "$(RED)FULL CLEAN DONE$(RESET)"
 
 #### BACKUP ####
