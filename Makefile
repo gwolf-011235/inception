@@ -66,6 +66,10 @@ down: # Stops and removes containers
 ps: # Lists running containers from the project
 	$(SILENT)docker compose -f $(COMPOSE_FILE) -p $(PROJECT_NAME) ps
 
+.PHONY: config
+config: # Prints the configuration of the project
+	$(SILENT)docker compose -f $(COMPOSE_FILE) -p $(PROJECT_NAME) config
+	
 .PHONY: .data
 .data:
 	echo "$(BLUE)Creating data directories$(RESET)"
