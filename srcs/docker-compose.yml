@@ -189,12 +189,12 @@ services:
       - source: ftp_config
         target: /etc/pam.d/vsftpd.virtual
     volumes:
-      - wordpress_data:/home/${FTP_USER}/
+      - wordpress_data:/home/${USER_NAME}/
     secrets:
       - source: ftp_user_password
         target: ftp_user_password
     environment:
-      - FTP_USER=${FTP_USER}
+      - USER_NAME=${USER_NAME}
       - FTP_USER_PASSWORD_FILE=${FTP_USER_PASSWORD_FILE}
   cadvisor:
     container_name: cadvisor
