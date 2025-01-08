@@ -82,6 +82,11 @@ server {
 		proxy_set_header X-Scheme $scheme;
 	}
 
+	## Cadvisor ##
+	location  ~* /admin/cadvisor/.*$ {
+		proxy_pass http://cadvisor:8080;
+	}
+
 	# deny access to .htaccess files, if Apache's document root
 	# concurs with nginx's one
 	#

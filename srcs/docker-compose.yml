@@ -205,8 +205,6 @@ services:
         - CURL_VERSION=${CURL_VERSION}
     init: true
     restart: always
-    ports:
-      - 8080:8080
     networks:
       - inception
     volumes:
