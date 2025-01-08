@@ -105,7 +105,15 @@ services:
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
   adminer:
     container_name: adminer
-    build: ${DIR_REQUIREMENTS}/bonus/adminer/
+    build:
+      context: ${DIR_REQUIREMENTS}/bonus/adminer/
+      args:
+        - CURRENT_UID=${CURRENT_UID}
+        - CURRENT_GID=${CURRENT_GID}
+        - PHP_FPM_VERSION=${PHP_FPM_VERSION}
+        - PHP_MYSQL_VERSION=${PHP_MYSQL_VERSION}
+        - CURL_VERSION=${CURL_VERSION}
+        - ADMINER_VERSION=${ADMINER_VERSION}
     init: true
     restart: always
     depends_on:
@@ -124,7 +132,12 @@ services:
       - ADMINER_DEFAULT_USERNAME=${WORDPRESS_DB_USER}
   redis:
     container_name: redis
-    build: ${DIR_REQUIREMENTS}/bonus/redis
+    build:
+      context: ${DIR_REQUIREMENTS}/bonus/redis
+      args:
+        - CURRENT_UID=${CURRENT_UID}
+        - CURRENT_GID=${CURRENT_GID}
+        - REDIS_VERSION=${REDIS_VERSION}
     init: true
     restart: always
     depends_on:
@@ -143,6 +156,8 @@ services:
       args:
           - CURRENT_UID=${CURRENT_UID}
           - CURRENT_GID=${CURRENT_GID}
+          - VSFTPD_VERSION=${VSFTPD_VERSION}
+          - DB_UTIL_VERSION=${DB_UTIL_VERSION}
           - FTP_USER=${FTP_USER}
     init: true
     restart: always
@@ -170,9 +185,8 @@ services:
       build:
         context: ${DIR_REQUIREMENTS}/bonus/cadvisor/
         args:
-          - CURRENT_UID=${CURRENT_UID}
-          - CURRENT_GID=${CURRENT_GID}
           - CADVISOR_VERSION=${CADVISOR_VERSION}
+          - CURL_VERSION=${CURL_VERSION}
       init: true
       restart: always
       ports:

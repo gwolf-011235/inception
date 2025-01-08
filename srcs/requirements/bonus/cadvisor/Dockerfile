@@ -1,13 +1,14 @@
 FROM debian:bookworm
 
-ARG CADVISOR_VERSION=v0.49.2
+ARG CURL_VERSION=7.88.1-10+deb12u8
+ARG CADVISOR_VERSION=0.49.2
 
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -y \
-		curl
+		curl=${CURL_VERSION}
 
-RUN curl -L https://github.com/google/cadvisor/releases/download/${CADVISOR_VERSION}/cadvisor-${CADVISOR_VERSION}-linux-amd64 \
+RUN curl -L https://github.com/google/cadvisor/releases/download/v${CADVISOR_VERSION}/cadvisor-v${CADVISOR_VERSION}-linux-amd64 \
 	-o /usr/local/bin/cadvisor && \
 	chmod +x /usr/local/bin/cadvisor
 
