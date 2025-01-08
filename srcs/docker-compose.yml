@@ -12,8 +12,10 @@ services:
     init: true
     restart: always
     depends_on:
-      - wp-php
-      - mariadb
+      wp-php:
+        condition: service_started
+      mariadb:
+        condition: service_healthy
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
@@ -44,7 +46,8 @@ services:
     init: true
     restart: always
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     configs:
       - source: fpm_config
         target: /etc/php/8.2/fpm/pool.d/www.conf
@@ -102,6 +105,12 @@ services:
       - MARIADB_WPUSER_PASSWORD_FILE=${MARIADB_WPUSER_PASSWORD_FILE}
       - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      start_period: 5s
+      interval: 10s
+      timeout: 5s
+      retries: 3
   adminer:
     container_name: adminer
     build:
@@ -116,7 +125,8 @@ services:
     init: true
     restart: always
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     configs:
       - source: adminer_config
         target: /etc/php/8.2/fpm/pool.d/www.conf

@@ -19,6 +19,7 @@ RUN rm -rf /var/lib/mysql/ && \
 		/run/mysqld;
 
 COPY --chmod=0755 tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=0755 tools/healthcheck.sh /usr/local/bin/
 
 WORKDIR /var/lib/mysql/
 
