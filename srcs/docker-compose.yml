@@ -41,6 +41,7 @@ services:
         - PHP_FPM_VERSION=${PHP_FPM_VERSION}
         - PHP_MYSQL_VERSION=${PHP_MYSQL_VERSION}
         - CURL_VERSION=${CURL_VERSION}
+        - WP_CLI_VERSION=${WP_CLI_VERSION}
     init: true
     restart: always
     depends_on:
@@ -128,7 +129,6 @@ services:
     restart: always
     depends_on:
       - wp-php
-    restart: always
     configs:
       - source: redis_config
         target: /etc/redis/redis.conf
