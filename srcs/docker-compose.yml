@@ -11,6 +11,10 @@ services:
         - NGINX_VERSION=${NGINX_VERSION}
         - SSL_CERT_VERSION=${SSL_CERT_VERSION}
     init: true
+    restart: always
+    depends_on:
+      - wp-php
+      - mariadb
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
@@ -21,9 +25,6 @@ services:
         target: site.crt
       - source: server-key
         target: site.key
-    depends_on:
-      - wp-php
-      - mariadb
     ports:
       - "443:443"
     volumes:
@@ -81,6 +82,7 @@ services:
         - CURRENT_GID=${CURRENT_GID}
         - MARIADB_VERSION=${MARIADB_VERSION}
     init: true
+    restart: always
     configs:
       - source: mariadb_config
         target: /etc/mysql/mariadb.conf.d/50-server.cnf
@@ -103,17 +105,17 @@ services:
   adminer:
     container_name: adminer
     build: ${DIR_REQUIREMENTS}/bonus/adminer/
+    init: true
+    restart: always
     depends_on:
       - mariadb
-    init: true
-    networks:
-      - inception
-    restart: always
     configs:
       - source: adminer_config
         target: /etc/php/8.2/fpm/pool.d/www.conf
       - source: adminer-index.php
         target: /var/www/html/index.php
+    networks:
+      - inception
     environment:
       - ADMINER_DEFAULT_DRIVER=server
       - ADMINER_DEFAULT_DB=${WORDPRESS_DB_NAME}
@@ -122,6 +124,8 @@ services:
   redis:
     container_name: redis
     build: ${DIR_REQUIREMENTS}/bonus/redis
+    init: true
+    restart: always
     depends_on:
       - wp-php
     restart: always
@@ -140,16 +144,16 @@ services:
           - CURRENT_UID=${CURRENT_UID}
           - CURRENT_GID=${CURRENT_GID}
           - FTP_USER=${FTP_USER}
+    init: true
+    restart: always
     depends_on:
       - wp-php
-    init: true
     ports:
       - "20:20"
       - "21:21"
       - "21100-21110:21100-21110"
     networks:
       - inception
-    restart: always
     configs:
       - source: ftp_config
         target: /etc/pam.d/vsftpd.virtual
@@ -170,11 +174,11 @@ services:
           - CURRENT_GID=${CURRENT_GID}
           - CADVISOR_VERSION=${CADVISOR_VERSION}
       init: true
+      restart: always
       ports:
         - 8080:8080
       networks:
         - inception
-      restart: always
       volumes:
         - /:/rootfs:ro
         - /var/run:/var/run:ro
@@ -191,13 +195,14 @@ services:
         - CURRENT_UID=${CURRENT_UID}
         - CURRENT_GID=${CURRENT_GID}
     init: true
+    restart: always
+    depends_on:
+      - nginx
     configs:
       - source: website_config
         target: /etc/nginx/nginx.conf
       - source: website_sites_available
         target: /etc/nginx/sites-available/default
-    depends_on:
-      - nginx
     volumes:
       - ${DIR_REQUIREMENTS}/bonus/website/:/var/www/html
     networks:
