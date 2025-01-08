@@ -4,17 +4,19 @@ ARG USER_UID=1000
 ARG USER_GID=1000
 ARG MARIADB_VERSION=1:10.11.6-0+deb12u1
 
-RUN groupadd -r -g $USER_GID mysql && useradd -r -g mysql -u $USER_UID --home /var/lib/mysql/ mysql
+RUN groupadd -r -g ${USER_GID} mysql && useradd -r -g mysql -u ${USER_UID} mysql
 
-RUN apt-get update; \
-	apt-get install -y mariadb-server=${MARIADB_VERSION};
+RUN apt-get update && \
+	apt-get install -y \
+		mariadb-server=${MARIADB_VERSION};
 
-RUN mkdir -p /run/mysqld; \
-	# remove the default mysql directory
-	rm -rf /var/lib/mysql/; \
-	mkdir -p /var/lib/mysql/; \
-	chown -R mysql:mysql /var/lib/mysql /run/mysqld; \
-	chmod 755 /run/mysqld;
+RUN rm -rf /var/lib/mysql/ && \
+	mkdir -p \
+		/var/lib/mysql/ \
+		/run/mysqld/ && \
+	chown -R mysql:mysql \
+		/var/lib/mysql \
+		/run/mysqld;
 
 COPY --chmod=0755 tools/docker-entrypoint.sh /usr/local/bin/
 
