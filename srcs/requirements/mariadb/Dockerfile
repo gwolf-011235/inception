@@ -1,8 +1,8 @@
 FROM debian:bookworm
 
-ARG MARIADB_VERSION="set_in_docker_compose"
 ARG CURRENT_UID=1000
 ARG CURRENT_GID=1000
+ARG MARIADB_VERSION=1:10.11.6-0+deb12u1
 
 RUN groupadd -r -g $CURRENT_GID mysql && useradd -r -g mysql -u $CURRENT_UID --home /var/lib/mysql/ mysql
 
@@ -25,4 +25,3 @@ USER mysql
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["mariadbd"]
-

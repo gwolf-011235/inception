@@ -8,6 +8,8 @@ services:
       args:
         - CURRENT_UID=${CURRENT_UID}
         - CURRENT_GID=${CURRENT_GID}
+        - NGINX_VERSION=${NGINX_VERSION}
+        - SSL_CERT_VERSION=${SSL_CERT_VERSION}
     init: true
     configs:
       - source: nginx_config
@@ -35,7 +37,11 @@ services:
       args:
         - CURRENT_UID=${CURRENT_UID}
         - CURRENT_GID=${CURRENT_GID}
+        - PHP_FPM_VERSION=${PHP_FPM_VERSION}
+        - PHP_MYSQL_VERSION=${PHP_MYSQL_VERSION}
+        - CURL_VERSION=${CURL_VERSION}
     init: true
+    restart: always
     depends_on:
       - mariadb
     configs:
