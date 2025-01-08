@@ -13,7 +13,7 @@ services:
     restart: always
     depends_on:
       wp-php:
-        condition: service_started
+        condition: service_healthy
       mariadb:
         condition: service_healthy
     configs:
@@ -76,6 +76,12 @@ services:
       - MARIADB_HOST=${MARIADB_HOST}
       - WP_CLI_CACHE_DIR=${WP_CLI_CACHE_DIR}
       - DOMAIN_NAME=${DOMAIN_NAME}
+    healthcheck:
+      test: ["CMD", "wp", "core", "verify-checksums"]
+      start_period: 5s
+      interval: 10s
+      timeout: 5s
+      retries: 3
   mariadb:
     container_name: mariadb
     build:
@@ -150,7 +156,8 @@ services:
     init: true
     restart: always
     depends_on:
-      - wp-php
+      wp-php:
+        condition: service_healthy
     configs:
       - source: redis_config
         target: /etc/redis/redis.conf
@@ -171,7 +178,8 @@ services:
     init: true
     restart: always
     depends_on:
-      - wp-php
+      wp-php:
+        condition: service_healthy
     ports:
       - "20:20"
       - "21:21"
