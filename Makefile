@@ -137,10 +137,15 @@ clean_data: # Cleans data directories and docker volumes
 	echo "$(RED)Removing docker volumes$(RESET)"
 	docker volume rm -f $(PROJECT_NAME)_wordpress_data $(PROJECT_NAME)_mariadb_data
 
-.PHONY: clean_doc
-clean_doc: # Removes docker images and build cache
-	echo "$(RED)Prune docker system$(RESET)"
-	docker system prune -af
+.PHONY: clean_images
+clean_images: # Removes created docker images
+	echo "$(RED)Removing project images$(RESET)"
+	IMAGE_LIST=$$(docker images --filter reference=$(PROJECT_NAME)* -q) && \
+	if [ -n "$$IMAGE_LIST" ]; then \
+		docker rmi $$IMAGE_LIST; \
+	else \
+		echo "No images to remove"; \
+	fi
 
 .PHONY: clean_env
 clean_env: # Restores .env from bak file
@@ -152,7 +157,7 @@ clean_env: # Restores .env from bak file
 	fi
 
 .PHONY: fclean
-fclean: down clean_sec clean_data clean_env clean_doc # Runs all Clean targets
+fclean: down clean_sec clean_data clean_env clean_images # Runs all Clean targets
 	echo "$(RED)FULL CLEAN DONE$(RESET)"
 
 #### BACKUP ####
