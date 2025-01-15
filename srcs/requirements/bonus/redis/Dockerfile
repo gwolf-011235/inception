@@ -3,7 +3,7 @@ FROM debian:bookworm
 ARG USER_NAME=redis
 ARG USER_UID=1000
 ARG USER_GID=1000
-ARG REDIS_VERSION=5:7.0.15-1~deb12u1
+ARG REDIS_VERSION=5:7.0.15-1~deb12u2
 
 RUN groupadd -r -g ${USER_GID} ${USER_NAME} && useradd -r -g ${USER_NAME} -u ${USER_UID} ${USER_NAME}
 
