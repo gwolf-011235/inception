@@ -93,7 +93,6 @@ config: # Prints the configuration of the project
 .PHONY: .env
 .env:
 	echo "$(BLUE)Updating .env file$(RESET)"
-	cp $(ENV_FILE) $(ENV_FILE).bak
 	sed -i 's/USER_NAME=#/USER_NAME=$(USER_NAME)/g' $(ENV_FILE)
 	sed -i 's/USER_UID=#/USER_UID=$(USER_UID)/g' $(ENV_FILE)
 	sed -i 's/USER_GID=#/USER_GID=$(USER_GID)/g' $(ENV_FILE)
@@ -149,12 +148,14 @@ clean_images: # Removes created docker images
 
 .PHONY: clean_env
 clean_env: # Restores .env from bak file
-	echo "$(RED)Restoring .env file$(RESET)"
-	if [ ! -e $(ENV_FILE).bak ] ; then \
-		echo "$(RED)Missing .env.bak file$(RESET)"; \
-	else \
-		mv $(ENV_FILE).bak $(ENV_FILE); \
-	fi
+	echo "$(BLUE)Resetting .env file to placeholder values$(RESET)"
+	sed -i 's/^USER_NAME=.*/USER_NAME=#/' $(ENV_FILE)
+	sed -i 's/^USER_UID=.*/USER_UID=#/' $(ENV_FILE)
+	sed -i 's/^USER_GID=.*/USER_GID=#/' $(ENV_FILE)
+	sed -i 's/^DIR_SECRET=.*/DIR_SECRET=#/g' $(ENV_FILE)
+	sed -i 's/^DIR_DATA_WORDPRESS=.*/DIR_DATA_WORDPRESS=#/g' $(ENV_FILE)
+	sed -i 's/^DIR_DATA_MARIADB=.*/DIR_DATA_MARIADB=#/g' $(ENV_FILE)
+	sed -i 's/^DIR_REQUIREMENTS=.*/DIR_REQUIREMENTS=#/g' $(ENV_FILE)
 
 .PHONY: fclean
 fclean: down clean_sec clean_data clean_env clean_images # Runs all Clean targets
