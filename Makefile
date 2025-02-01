@@ -161,6 +161,14 @@ clean_env: # Restores .env from bak file
 fclean: down clean_sec clean_data clean_env clean_images # Runs all Clean targets
 	echo "$(RED)FULL CLEAN DONE$(RESET)"
 
+#### REBUILD ####
+
+.PHONY: re
+re: down clean_images # Rebuilds the project
+	docker compose -f $(COMPOSE_FILE) -p $(PROJECT_NAME) build --no-cache
+	$(MAKE) --no-print-directory up
+
+
 #### BACKUP ####
 
 .PHONY: backup
