@@ -25,8 +25,8 @@ if [ ! -e /etc/vsftpd/init ]; then
 	rm /etc/vsftpd/virtual_users.txt
 
 	ftp_note "Chown the home directory"
-	chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME}
-	
+	chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/wordpress
+
 	ftp_note "Updating config file with ${USER_NAME}"
 	echo "guest_username=${USER_NAME}" >> /etc/vsftpd/vsftpd.conf
 

@@ -189,7 +189,7 @@ services:
       - source: ftp_config
         target: /etc/pam.d/vsftpd.virtual
     volumes:
-      - wordpress_data:/home/${USER_NAME}/
+      - wordpress_data:/home/${USER_NAME}/wordpress
     secrets:
       - source: ftp_user_password
         target: ftp_user_password
