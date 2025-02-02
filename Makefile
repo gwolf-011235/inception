@@ -30,6 +30,7 @@ DIR_DATA_MARIADB = $(DIR_DATA)/mariadb
 
 COMPOSE_FILE := $(DIR_SRCS)/docker-compose.yml
 ENV_FILE := $(DIR_SRCS)/.env
+ENV_FILE_BAK := $(ENV_FILE).bak
 
 #### BACKUP ####
 
@@ -93,6 +94,7 @@ config: # Prints the configuration of the project
 .PHONY: .env
 .env:
 	echo "$(BLUE)Updating .env file$(RESET)"
+	cp $(ENV_FILE) $(ENV_FILE_BAK)
 	sed -i 's/USER_NAME=#/USER_NAME=$(USER_NAME)/g' $(ENV_FILE)
 	sed -i 's/USER_UID=#/USER_UID=$(USER_UID)/g' $(ENV_FILE)
 	sed -i 's/USER_GID=#/USER_GID=$(USER_GID)/g' $(ENV_FILE)
@@ -147,7 +149,7 @@ clean_images: # Removes created docker images
 	fi
 
 .PHONY: clean_env
-clean_env: # Restores .env from bak file
+clean_env: # Restores placeholder values in .env file
 	echo "$(BLUE)Resetting .env file to placeholder values$(RESET)"
 	sed -i 's/^USER_NAME=.*/USER_NAME=#/' $(ENV_FILE)
 	sed -i 's/^USER_UID=.*/USER_UID=#/' $(ENV_FILE)
