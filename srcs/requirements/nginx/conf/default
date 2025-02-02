@@ -83,7 +83,7 @@ server {
 	}
 
 	## Cadvisor ##
-	location  ~ ^/admin/cadvisor/.*$ {
+	location  ~ ^/admin/cadvisor(/.*$|$) {
 		proxy_pass http://cadvisor:8080;
 	}
 
