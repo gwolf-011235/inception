@@ -180,7 +180,6 @@ services:
       wp-php:
         condition: service_healthy
     ports:
-      - "20:20"
       - "21:21"
       - "21100-21110:21100-21110"
     networks:
