@@ -190,10 +190,10 @@ services:
     volumes:
       - wordpress_data:/home/${USER_NAME}/wordpress
     secrets:
-      - source: server-certificate
-        target: site.crt
-      - source: server-key
-        target: site.key
+      - source: ftp-certificate
+        target: ftp.crt
+      - source: ftp-key
+        target: ftp.key
       - source: ftp_user_password
         target: ftp_user_password
     environment:
@@ -272,6 +272,10 @@ secrets:
     file: ${DIR_SECRET}/site.crt
   server-key:
     file: ${DIR_SECRET}/site.key
+  ftp-certificate:
+    file: ${DIR_SECRET}/ftp.crt
+  ftp-key:
+    file: ${DIR_SECRET}/ftp.key
   mariadb_root_password:
     file: ${DIR_SECRET}/mariadb_root_password.txt
   mariadb_wpuser_password:
