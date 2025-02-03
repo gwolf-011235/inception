@@ -190,6 +190,10 @@ services:
     volumes:
       - wordpress_data:/home/${USER_NAME}/wordpress
     secrets:
+      - source: server-certificate
+        target: site.crt
+      - source: server-key
+        target: site.key
       - source: ftp_user_password
         target: ftp_user_password
     environment:
