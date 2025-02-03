@@ -6,33 +6,35 @@ ARG USER_GID=1000
 ARG NGINX_VERSION=1.22.1-9
 ARG SSL_CERT_VERSION=1.1.2
 
-RUN groupadd -r -g ${USER_GID} ${USER_NAME} && useradd -r -g ${USER_NAME} -u ${USER_UID} ${USER_NAME}
-
-RUN apt-get update && \
-	apt-get install -y \
+RUN set -eux \
+	&& groupadd --system --gid ${USER_GID} ${USER_NAME} \
+	&& useradd --system --gid ${USER_GID} --uid ${USER_UID} ${USER_NAME} \
+	&& apt-get update \
+	&& apt-get install --no-install-recommends -y \
 		nginx=${NGINX_VERSION} \
-		ssl-cert=${SSL_CERT_VERSION};
+		ssl-cert=${SSL_CERT_VERSION} \
+	&& rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p \
 		/var/www/html/ \
 		/var/cache/nginx \
 		/var/log/nginx \
 		/var/lib/nginx \
-		/etc/nginx/ && \
-	chown -R ${USER_NAME}:${USER_NAME} \
+		/etc/nginx/ \
+	&& chown -R ${USER_NAME}:${USER_NAME} \
 		/var/www/html/ \
 		/var/cache/nginx/ \
 		/var/log/nginx/ \
 		/var/lib/nginx \
-		/etc/nginx/ && \
-	chmod -R 1755 /etc/nginx/conf.d && \
-	touch /run/nginx.pid && \
-	chown -R ${USER_NAME}:${USER_NAME} /run/nginx.pid
+		/etc/nginx/ \
+	&& chmod -R 1755 /etc/nginx/conf.d \
+	&& touch /run/nginx.pid \
+	&& chown -R ${USER_NAME}:${USER_NAME} /run/nginx.pid
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stdout /var/log/nginx/error.log
 
-COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 WORKDIR /var/www/html
 
