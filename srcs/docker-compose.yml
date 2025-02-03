@@ -19,9 +19,11 @@ services:
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
-      - source: nginx_sites_available
-        target: /etc/nginx/sites-available/default
+      - source: nginx_bonus_config
+        target: /etc/nginx/conf.d/bonus.conf
     secrets:
+      - source: root-certificate
+        target: root-ca.crt
       - source: server-certificate
         target: site.crt
       - source: server-key
@@ -248,8 +250,8 @@ networks:
 configs:
   nginx_config:
     file: ${DIR_REQUIREMENTS}/nginx/conf/nginx.conf
-  nginx_sites_available:
-    file: ${DIR_REQUIREMENTS}/nginx/conf/default
+  nginx_bonus_config:
+    file: ${DIR_REQUIREMENTS}/nginx/conf/bonus.conf
   mariadb_config:
     file: ${DIR_REQUIREMENTS}/mariadb/conf/50-server.cnf
   fpm_config:
@@ -268,6 +270,8 @@ configs:
     file: ${DIR_REQUIREMENTS}/bonus/website/conf/default
 
 secrets:
+  root-certificate:
+    file: ${DIR_SECRET}/root-ca.crt
   server-certificate:
     file: ${DIR_SECRET}/site.crt
   server-key:
