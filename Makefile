@@ -158,6 +158,7 @@ clean_env: # Restores placeholder values in .env file
 	sed -i 's/^DIR_DATA_WORDPRESS=.*/DIR_DATA_WORDPRESS=#/g' $(ENV_FILE)
 	sed -i 's/^DIR_DATA_MARIADB=.*/DIR_DATA_MARIADB=#/g' $(ENV_FILE)
 	sed -i 's/^DIR_REQUIREMENTS=.*/DIR_REQUIREMENTS=#/g' $(ENV_FILE)
+	rm -f $(ENV_FILE_BAK)
 
 .PHONY: fclean
 fclean: down clean_sec clean_data clean_env clean_images # Runs all Clean targets
