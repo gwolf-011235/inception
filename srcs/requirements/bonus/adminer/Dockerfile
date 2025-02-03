@@ -8,23 +8,29 @@ ARG PHP_MYSQL_VERSION=8.2.26-1~deb12u1
 ARG CURL_VERSION=7.88.1-10+deb12u8
 ARG ADMINER_VERSION=4.8.1
 
-RUN groupadd -r -g ${USER_GID} ${USER_NAME} && useradd -r -g ${USER_NAME} -u ${USER_UID} ${USER_NAME}
-
-RUN set -eux; \
-	apt-get update; \
-	apt-get install -y \
+RUN set -eux \
+	&& groupadd --system --gid ${USER_GID} ${USER_NAME} \
+	&& useradd --system --gid ${USER_GID} --uid ${USER_UID} ${USER_NAME} \
+	&& apt-get update \
+	&& apt-get install --no-install-recommends -y \
 		php8.2-fpm=${PHP_FPM_VERSION} \
 		php8.2-mysql=${PHP_MYSQL_VERSION} \
-		curl=${CURL_VERSION}
+		curl=${CURL_VERSION} \
+		ca-certificates \
+	&& rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /var/www/html; \
-	chown -R ${USER_NAME}:${USER_NAME} /var/www/html /var/log; \
-	chmod 1777 /var/www/html /run/php/;
+RUN mkdir -p /var/www/html/ \
+	&& chown -R ${USER_NAME}:${USER_NAME} \
+		/var/www/html/ \
+		/var/log \
+	&& chmod 1777 \
+		/var/www/html/ \
+		/run/php/
 
 RUN curl -L https://github.com/vrana/adminer/releases/download/v${ADMINER_VERSION}/adminer-${ADMINER_VERSION}.php \
-		-o /var/www/html/adminer.php;
+		-o /var/www/html/adminer.php
 
-COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 WORKDIR /var/www/html
 

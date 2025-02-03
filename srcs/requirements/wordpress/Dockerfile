@@ -19,10 +19,6 @@ RUN set -eux \
 		ca-certificates \
 	&& rm -rf /var/lib/apt/lists/*
 
-RUN curl -L https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar \
-		-o /usr/local/bin/wp \
-	&& chmod +x /usr/local/bin/wp
-
 RUN mkdir -p /var/www/html/ \
 	&& chown -R ${USER_NAME}:${USER_NAME} \
 		/var/www/html/ \
@@ -30,6 +26,10 @@ RUN mkdir -p /var/www/html/ \
 	&& chmod 1777 \
 		/var/www/html/ \
 		/run/php/
+
+RUN curl -L https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar \
+		-o /usr/local/bin/wp \
+	&& chmod +x /usr/local/bin/wp
 
 COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
