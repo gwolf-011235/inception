@@ -236,8 +236,6 @@ services:
     configs:
       - source: website_config
         target: /etc/nginx/nginx.conf
-      - source: website_sites_available
-        target: /etc/nginx/sites-available/default
     volumes:
       - ${DIR_REQUIREMENTS}/bonus/website/:/var/www/html
     networks:
@@ -266,8 +264,6 @@ configs:
     file: ${DIR_REQUIREMENTS}/bonus/ftp/conf/vsftpd.virtual
   website_config:
     file: ${DIR_REQUIREMENTS}/bonus/website/conf/nginx.conf
-  website_sites_available:
-    file: ${DIR_REQUIREMENTS}/bonus/website/conf/default
 
 secrets:
   root-certificate:
