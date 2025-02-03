@@ -4,22 +4,25 @@ ARG USER_UID=1000
 ARG USER_GID=1000
 ARG MARIADB_VERSION=1:10.11.6-0+deb12u1
 
-RUN groupadd -r -g ${USER_GID} mysql && useradd -r -g mysql -u ${USER_UID} mysql
+RUN set -eux \
+	&& groupadd --system --gid ${USER_GID} mysql \
+	&& useradd --system --gid ${USER_GID} --uid ${USER_UID} mysql \
+	&& apt-get update \
+	&& apt-get install --no-install-recommends -y \
+		mariadb-server=${MARIADB_VERSION} \
+	&& rm -rf \
+		/var/lib/apt/lists/* \
+		/var/lib/mysql/
 
-RUN apt-get update && \
-	apt-get install -y \
-		mariadb-server=${MARIADB_VERSION};
-
-RUN rm -rf /var/lib/mysql/ && \
-	mkdir -p \
+RUN mkdir -p \
 		/var/lib/mysql/ \
-		/run/mysqld/ && \
-	chown -R mysql:mysql \
+		/run/mysqld/ \
+	&& chown -R mysql:mysql \
 		/var/lib/mysql \
-		/run/mysqld;
+		/run/mysqld
 
-COPY --chmod=0755 tools/docker-entrypoint.sh /usr/local/bin/
-COPY --chmod=0755 tools/healthcheck.sh /usr/local/bin/
+COPY --chmod=755 tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=755 tools/healthcheck.sh /usr/local/bin/
 
 WORKDIR /var/lib/mysql/
 
