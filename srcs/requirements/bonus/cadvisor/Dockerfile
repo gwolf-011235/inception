@@ -18,4 +18,4 @@ COPY --chmod=755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["cadvisor", "-url_base_prefix=/admin/cadvisor"]
+CMD ["cadvisor", "--url_base_prefix=/admin/cadvisor"]
