@@ -218,8 +218,9 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
+      - /etc/machine-id:/etc/machine-id:ro
     devices:
-      - "/dev/kmsg:/dev/kmsg"
+      - /dev/kmsg
   website:
     container_name: website
     build:
