@@ -22,8 +22,6 @@ services:
       - source: nginx_bonus_config
         target: /etc/nginx/conf.d/bonus.conf
     secrets:
-      - source: root-certificate
-        target: root-ca.crt
       - source: server-certificate
         target: site.crt
       - source: server-key
@@ -271,8 +269,6 @@ configs:
     file: ${DIR_REQUIREMENTS}/bonus/website/conf/nginx.conf
 
 secrets:
-  root-certificate:
-    file: ${DIR_SECRET}/root-ca.crt
   server-certificate:
     file: ${DIR_SECRET}/site.crt
   server-key:
