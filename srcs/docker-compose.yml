@@ -221,6 +221,10 @@ services:
       - /etc/machine-id:/etc/machine-id:ro
     devices:
       - /dev/kmsg
+    command:
+      - cadvisor
+      - --url_base_prefix=/admin/cadvisor
+      - --docker_only=true
   website:
     container_name: website
     build:
