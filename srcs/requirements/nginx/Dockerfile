@@ -36,7 +36,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stdout /var/log/nginx/error.log
 
 COPY --chmod=755 tools/docker-entrypoint.sh /usr/local/bin/
-COPY --chmod=755 tools/healthcheck.sh /usr/local/bin/
+# COPY --chmod=755 tools/healthcheck.sh /usr/local/bin/
 
 WORKDIR /var/www/html
 

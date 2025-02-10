@@ -31,12 +31,12 @@ services:
       - wordpress_data:/var/www/html
     networks:
       - inception
-    healthcheck:
-      test: ["CMD", "healthcheck.sh"]
-      start_period: 5s
-      interval: 10s
-      timeout: 5s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD", "healthcheck.sh"]
+    #   start_period: 5s
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
   wp-php:
     container_name: wp-php
     build:
@@ -212,9 +212,6 @@ services:
         - CURL_VERSION=${CURL_VERSION}
     init: true
     restart: always
-    depends_on:
-      nginx:
-        condition: service_healthy
     networks:
       - inception
     volumes:
@@ -241,9 +238,6 @@ services:
         - CURL_VERSION=${CURL_VERSION}
     init: true
     restart: always
-    depends_on:
-      nginx:
-          condition: service_healthy
     configs:
       - source: website_config
         target: /etc/nginx/nginx.conf
