@@ -31,6 +31,12 @@ services:
       - wordpress_data:/var/www/html
     networks:
       - inception
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      start_period: 5s
+      interval: 10s
+      timeout: 5s
+      retries: 3
   wp-php:
     container_name: wp-php
     build:
@@ -234,7 +240,8 @@ services:
     init: true
     restart: always
     depends_on:
-      - nginx
+      nginx:
+          condition: service_healthy
     configs:
       - source: website_config
         target: /etc/nginx/nginx.conf
