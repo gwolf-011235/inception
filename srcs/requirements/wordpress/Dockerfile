@@ -1,6 +1,6 @@
 FROM debian:bookworm
 
-ARG USER_NAME=wpuser
+ARG USER_NAME=www-data
 ARG USER_UID=1000
 ARG USER_GID=1000
 ARG PHP_FPM_VERSION=8.2.26-1~deb12u1
@@ -9,8 +9,8 @@ ARG CURL_VERSION=7.88.1-10+deb12u8
 ARG WP_CLI_VERSION=2.11.0
 
 RUN set -eux \
-	&& groupadd --system --gid ${USER_GID} ${USER_NAME} \
-	&& useradd --system --gid ${USER_GID} --uid ${USER_UID} ${USER_NAME} \
+	&& groupmod --gid ${USER_GID} ${USER_NAME} \
+	&& usermod --uid ${USER_UID} ${USER_NAME} \
 	&& apt-get update \
 	&& apt-get install --no-install-recommends -y \
 		php8.2-fpm=${PHP_FPM_VERSION} \
@@ -23,7 +23,7 @@ RUN mkdir -p /var/www/html/ \
 	&& chown -R ${USER_NAME}:${USER_NAME} \
 		/var/www/html/ \
 		/var/log \
-	&& chmod 1777 \
+	&& chmod 755 \
 		/var/www/html/ \
 		/run/php/
 
@@ -31,7 +31,7 @@ RUN curl -L https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION
 		-o /usr/local/bin/wp \
 	&& chmod +x /usr/local/bin/wp
 
-COPY --chmod=0755 ./tools/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 WORKDIR /var/www/html/
 
