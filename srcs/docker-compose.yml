@@ -127,7 +127,6 @@ services:
     build:
       context: ${DIR_REQUIREMENTS}/bonus/adminer/
       args:
-        - USERNAME=${USER_NAME}
         - USER_UID=${USER_UID}
         - USER_GID=${USER_GID}
         - PHP_FPM_VERSION=${PHP_FPM_VERSION}
