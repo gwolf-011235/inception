@@ -1,18 +1,19 @@
 FROM debian:bookworm
 
-ARG USER_NAME=nginx
+ARG USER_NAME=www-data
 ARG USER_UID=1000
 ARG USER_GID=1000
 ARG NGINX_VERSION=1.22.1-9
-ARG SSL_CERT_VERSION=1.1.2
+ARG CURL_VERSION=7.88.1-10+deb12u8
 
 RUN set -eux \
-	&& groupadd --system --gid ${USER_GID} ${USER_NAME} \
-	&& useradd --system --gid ${USER_GID} --uid ${USER_UID} ${USER_NAME} \
+	&& groupmod --gid ${USER_GID} ${USER_NAME} \
+	&& usermod --uid ${USER_UID} ${USER_NAME} \
 	&& apt-get update \
 	&& apt-get install --no-install-recommends -y \
 		nginx=${NGINX_VERSION} \
-		ssl-cert=${SSL_CERT_VERSION} \
+		curl=${CURL_VERSION} \
+		ca-certificates \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p \
