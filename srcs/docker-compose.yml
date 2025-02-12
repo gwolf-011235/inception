@@ -236,7 +236,7 @@ services:
       - source: website_config
         target: /etc/nginx/nginx.conf
     volumes:
-      - ${DIR_REQUIREMENTS}/bonus/website/:/var/www/html
+      - ${DIR_REQUIREMENTS}/bonus/website/static_website:/var/www/html
     networks:
       - inception
 
