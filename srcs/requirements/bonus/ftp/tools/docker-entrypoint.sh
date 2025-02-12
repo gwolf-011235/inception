@@ -27,9 +27,10 @@ if [ ! -e /etc/vsftpd/init ]; then
 	ftp_note "Updating config file with ${USER_NAME}"
 	echo "guest_username=${USER_NAME}" >> /etc/vsftpd/vsftpd.conf
 
-	ftp_note "Send logfile to stdout"
-	touch /var/log/vsftpd/vsftpd.log
-	tail -f /var/log/vsftpd/vsftpd.log &
+# Not allowed since it used tail -f
+	# ftp_note "Send logfile to stdout"
+	# touch /var/log/vsftpd/vsftpd.log
+	# tail -f /var/log/vsftpd/vsftpd.log &
 
 	touch /etc/vsftpd/init
 fi
