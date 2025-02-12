@@ -31,12 +31,6 @@ services:
       - wordpress_data:/var/www/html
     networks:
       - inception
-    # healthcheck:
-    #   test: ["CMD", "healthcheck.sh"]
-    #   start_period: 5s
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 3
   wp-php:
     container_name: wp-php
     build:
