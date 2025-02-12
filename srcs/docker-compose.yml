@@ -157,9 +157,10 @@ services:
     restart: always
     configs:
       - source: redis_config
-        target: /etc/redis/redis.conf
+        target: /config/redis.conf
     volumes:
       - wordpress_data:/var/www/html
+      - redis_data:/var/lib/redis
     networks:
       - inception
   ftp:
@@ -296,4 +297,10 @@ volumes:
     driver_opts:
       type: none
       device: ${DIR_DATA_MARIADB}
+      o: bind
+  redis_data:
+    driver: local
+    driver_opts:
+      type: local
+      device: ${DIR_DATA_REDIS}
       o: bind

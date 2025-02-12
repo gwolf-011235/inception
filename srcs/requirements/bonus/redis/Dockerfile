@@ -15,6 +15,8 @@ RUN set -eux \
 
 COPY --chmod=755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
+USER ${USER_NAME}
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["redis-server", "/etc/redis/redis.conf"]
+CMD ["redis-server", "/config/redis.conf"]

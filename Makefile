@@ -19,12 +19,13 @@ DIR_ROOT := $(shell pwd)
 DIR_SRCS := $(DIR_ROOT)/srcs
 DIR_REQUIREMENTS := $(DIR_SRCS)/requirements
 DIR_SECRETS := $(DIR_ROOT)/secrets
-DIR_TOOLS := $(DIR_ROOT)/tools
+DIR_TOOLS := $(DIR_REQUIREMENTS)/tools
 DIR_BACKUP := $(DIR_ROOT)/backup
 DIR_HOME := /home/$(USER)
 DIR_DATA := $(DIR_HOME)/data
 DIR_DATA_WORDPRESS = $(DIR_DATA)/wordpress
 DIR_DATA_MARIADB = $(DIR_DATA)/mariadb
+DIR_DATA_REDIS = $(DIR_DATA)/redis
 
 #### FILES ####
 
@@ -36,6 +37,7 @@ ENV_FILE_BAK := $(ENV_FILE).bak
 
 BACKUP_WORDPRESS := $(DIR_BACKUP)/wordpress.tar.gz
 BACKUP_MARIADB := $(DIR_BACKUP)/mariadb.tar.gz
+BACKUP_REDIS := $(DIR_BACKUP)/redis.tar.gz
 BACKUP_SECRETS := $(DIR_BACKUP)/secrets.tar.gz
 
 .SILENT:
@@ -82,6 +84,7 @@ config: # Prints the configuration of the project
 	echo "$(BLUE)Creating data directories$(RESET)"
 	mkdir -p $(DIR_DATA_WORDPRESS)
 	mkdir -p $(DIR_DATA_MARIADB)
+	mkdir -p $(DIR_DATA_REDIS)
 
 .PHONY: .secret
 .secret:
@@ -102,6 +105,7 @@ config: # Prints the configuration of the project
 	sed -i 's+DIR_SECRET=#+DIR_SECRET=$(DIR_SECRETS)+g' $(ENV_FILE)
 	sed -i 's+DIR_DATA_WORDPRESS=#+DIR_DATA_WORDPRESS=$(DIR_DATA_WORDPRESS)+g' $(ENV_FILE)
 	sed -i 's+DIR_DATA_MARIADB=#+DIR_DATA_MARIADB=$(DIR_DATA_MARIADB)+g' $(ENV_FILE)
+	sed -i 's+DIR_DATA_REDIS=#+DIR_DATA_REDIS=$(DIR_DATA_REDIS)+g' $(ENV_FILE)
 	sed -i 's+DIR_REQUIREMENTS=#+DIR_REQUIREMENTS=$(DIR_REQUIREMENTS)+g' $(ENV_FILE)
 
 .PHONY: .init_check
@@ -117,7 +121,7 @@ config: # Prints the configuration of the project
 	if [ ! -e $(ENV_FILE).bak ] ; then \
 		$(MAKE) .env; \
 	fi
-	if [ ! -d $(DIR_DATA_WORDPRESS) ] || [ ! -d $(DIR_DATA_MARIADB) ] ; then \
+	if [ ! -d $(DIR_DATA_WORDPRESS) ] || [ ! -d $(DIR_DATA_MARIADB) ] || [ ! -d $(DIR_DATA_REDIS) ]; then \
 		$(MAKE) .data; \
 	fi
 	if [ ! -d $(DIR_SECRETS) ] || [ -z "$$(ls -A $(DIR_SECRETS))" ] ; then \
@@ -136,7 +140,7 @@ clean_data: # Cleans data directories and docker volumes
 	echo "$(RED)Removing $(DIR_DATA)$(RESET)"
 	rm -fr $(DIR_DATA)
 	echo "$(RED)Removing docker volumes$(RESET)"
-	docker volume rm -f $(PROJECT_NAME)_wordpress_data $(PROJECT_NAME)_mariadb_data
+	docker volume rm -f $(PROJECT_NAME)_wordpress_data $(PROJECT_NAME)_mariadb_data $(PROJECT_NAME)_redis_data
 
 .PHONY: clean_images
 clean_images: # Removes created docker images
@@ -157,6 +161,7 @@ clean_env: # Restores placeholder values in .env file
 	sed -i 's/^DIR_SECRET=.*/DIR_SECRET=#/g' $(ENV_FILE)
 	sed -i 's/^DIR_DATA_WORDPRESS=.*/DIR_DATA_WORDPRESS=#/g' $(ENV_FILE)
 	sed -i 's/^DIR_DATA_MARIADB=.*/DIR_DATA_MARIADB=#/g' $(ENV_FILE)
+	sed -i 's/^DIR_DATA_REDIS=.*/DIR_DATA_REDIS=#/g' $(ENV_FILE)
 	sed -i 's/^DIR_REQUIREMENTS=.*/DIR_REQUIREMENTS=#/g' $(ENV_FILE)
 	rm -f $(ENV_FILE_BAK)
 
@@ -180,6 +185,7 @@ backup: # Backs up the current Secret and Data directories
 	mkdir -p $(DIR_BACKUP)
 	tar -czf $(BACKUP_WORDPRESS) -C / $(DIR_DATA_WORDPRESS)
 	tar -czf $(BACKUP_MARIADB) -C / $(DIR_DATA_MARIADB)
+	tar -czf $(BACKUP_REDIS) -C / $(DIR_DATA_REDIS)
 	tar -czf $(BACKUP_SECRETS) $(DIR_SECRETS)
 
 .PHONY: restore
@@ -187,12 +193,13 @@ restore: .backup_check # Restores existing backup
 	echo "$(BLUE)Restoring backup$(RESET)"
 	tar -xzvf $(BACKUP_WORDPRESS) -C /
 	tar -xzvf $(BACKUP_MARIADB) -C /
+	tar -xzvf $(BACKUP_REDIS) -C /
 	tar -xzvf $(BACKUP_SECRETS)
 
 .PHONEY: .backup_check
 .backup_check:
 	if [ ! -d $(DIR_BACKUP) ] || \
-		[ ! -e $(BACKUP_WORDPRESS) ] || [ ! -e $(BACKUP_MARIADB) ] || [ ! -e $(BACKUP_SECRETS) ] ; then \
+		[ ! -e $(BACKUP_WORDPRESS) ] || [ ! -e $(BACKUP_MARIADB) ] || [ ! -e $(BACKUP_REDIS) ] || [ ! -e $(BACKUP_SECRETS) ] ; then \
 			echo "$(RED)Backup does not exist! To create run make backup$(RESET)"; \
 			exit 1; \
 	fi
