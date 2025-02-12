@@ -17,4 +17,4 @@ COPY --chmod=755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["redis-server", "--protected-mode", "no"]
+CMD ["redis-server", "/etc/redis/redis.conf"]
