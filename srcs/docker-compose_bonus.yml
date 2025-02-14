@@ -18,6 +18,8 @@ services:
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
+      - source: nginx_bonus_config
+        target: /etc/nginx/conf.d/bonus.conf
     secrets:
       - source: server-certificate
         target: site.crt
@@ -114,6 +116,130 @@ services:
       interval: 10s
       timeout: 30s
       retries: 3
+  adminer:
+    container_name: adminer
+    build:
+      context: ${DIR_REQUIREMENTS}/bonus/adminer/
+      args:
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
+        - PHP_FPM_VERSION=${PHP_FPM_VERSION}
+        - PHP_MYSQL_VERSION=${PHP_MYSQL_VERSION}
+        - CURL_VERSION=${CURL_VERSION}
+        - ADMINER_VERSION=${ADMINER_VERSION}
+    init: true
+    restart: always
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    configs:
+      - source: adminer_config
+        target: /etc/php/8.2/fpm/pool.d/www.conf
+      - source: adminer-index.php
+        target: /var/www/html/index.php
+    networks:
+      - inception
+    environment:
+      - ADMINER_DEFAULT_DRIVER=server
+      - ADMINER_DEFAULT_DB=${WORDPRESS_DB_NAME}
+      - ADMINER_DEFAULT_SERVER=${MARIADB_HOST}
+      - ADMINER_DEFAULT_USERNAME=${USER_NAME}
+  redis:
+    container_name: redis
+    build:
+      context: ${DIR_REQUIREMENTS}/bonus/redis
+      args:
+        - USER_NAME=${USER_NAME}
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
+        - REDIS_VERSION=${REDIS_VERSION}
+    init: true
+    restart: always
+    configs:
+      - source: redis_config
+        target: /config/redis.conf
+    volumes:
+      - wordpress_data:/var/www/html
+      - redis_data:/var/lib/redis
+    networks:
+      - inception
+  ftp:
+    container_name: ftp
+    build:
+      context: ${DIR_REQUIREMENTS}/bonus/ftp/
+      args:
+        - USER_NAME=${USER_NAME}
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
+        - VSFTPD_VERSION=${VSFTPD_VERSION}
+        - DB_UTIL_VERSION=${DB_UTIL_VERSION}
+    init: true
+    restart: always
+    depends_on:
+      wp-php:
+        condition: service_healthy
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    networks:
+      - inception
+    configs:
+      - source: ftp_config
+        target: /etc/pam.d/vsftpd.virtual
+    volumes:
+      - wordpress_data:/home/${USER_NAME}/wordpress
+    secrets:
+      - source: ftp-certificate
+        target: ftp.crt
+      - source: ftp-key
+        target: ftp.key
+      - source: ftp_user_password
+        target: ftp_user_password
+    environment:
+      - USER_NAME=${USER_NAME}
+      - FTP_USER_PASSWORD_FILE=${FTP_USER_PASSWORD_FILE}
+  cadvisor:
+    container_name: cadvisor
+    build:
+      context: ${DIR_REQUIREMENTS}/bonus/cadvisor/
+      args:
+        - CADVISOR_VERSION=${CADVISOR_VERSION}
+        - CURL_VERSION=${CURL_VERSION}
+    init: true
+    restart: always
+    networks:
+      - inception
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /etc/machine-id:/etc/machine-id:ro
+    devices:
+      - /dev/kmsg
+    command:
+      - cadvisor
+      - --url_base_prefix=/admin/cadvisor
+      - --docker_only=true
+  website:
+    container_name: website
+    build:
+      context: ${DIR_REQUIREMENTS}/nginx/
+      args:
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
+        - NGINX_VERSION=${NGINX_VERSION}
+        - CURL_VERSION=${CURL_VERSION}
+    init: true
+    restart: always
+    configs:
+      - source: website_config
+        target: /etc/nginx/nginx.conf
+    volumes:
+      - ${DIR_REQUIREMENTS}/bonus/website/static_website:/var/www/html
+    networks:
+      - inception
 
 networks:
   inception:
@@ -122,10 +248,22 @@ networks:
 configs:
   nginx_config:
     file: ${DIR_REQUIREMENTS}/nginx/conf/nginx.conf
+  nginx_bonus_config:
+    file: ${DIR_REQUIREMENTS}/nginx/conf/bonus.conf
   mariadb_config:
     file: ${DIR_REQUIREMENTS}/mariadb/conf/50-server.cnf
   fpm_config:
     file: ${DIR_REQUIREMENTS}/wordpress/conf/www.conf
+  adminer_config:
+    file: ${DIR_REQUIREMENTS}/bonus/adminer/conf/www.conf
+  adminer-index.php:
+    file: ${DIR_REQUIREMENTS}/bonus/adminer/conf/index.php
+  redis_config:
+    file: ${DIR_REQUIREMENTS}/bonus/redis/conf/redis.conf
+  ftp_config:
+    file: ${DIR_REQUIREMENTS}/bonus/ftp/conf/vsftpd.virtual
+  website_config:
+    file: ${DIR_REQUIREMENTS}/bonus/website/conf/nginx.conf
 
 secrets:
   server-certificate:
@@ -144,6 +282,8 @@ secrets:
     file: ${DIR_SECRET}/wordpress_admin_password.txt
   wordpress_user_password:
     file: ${DIR_SECRET}/wordpress_user_password.txt
+  ftp_user_password:
+    file: ${DIR_SECRET}/ftp_user_password.txt
 
 volumes:
   wordpress_data:
@@ -157,4 +297,10 @@ volumes:
     driver_opts:
       type: none
       device: ${DIR_DATA_MARIADB}
+      o: bind
+  redis_data:
+    driver: local
+    driver_opts:
+      type: local
+      device: ${DIR_DATA_REDIS}
       o: bind
