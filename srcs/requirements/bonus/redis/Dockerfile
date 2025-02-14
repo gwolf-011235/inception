@@ -13,6 +13,8 @@ RUN set -eux \
 		redis=${REDIS_VERSION} \
 	&& rm -rf /var/lib/apt/lists/*
 
+RUN chown -R ${USER_NAME}:${USER_NAME} /var/lib/redis
+
 COPY --chmod=755 ./tools/docker-entrypoint.sh /usr/local/bin/
 
 USER ${USER_NAME}
