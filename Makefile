@@ -119,13 +119,13 @@ config: # Prints the configuration of the project
 		exit 1; \
 	fi
 	if [ ! -e $(ENV_FILE).bak ] ; then \
-		$(MAKE) .env; \
+		$(MAKE) --no-print-directory .env; \
 	fi
 	if [ ! -d $(DIR_DATA_WORDPRESS) ] || [ ! -d $(DIR_DATA_MARIADB) ] || [ ! -d $(DIR_DATA_REDIS) ]; then \
-		$(MAKE) .data; \
+		$(MAKE) --no-print-directory .data; \
 	fi
 	if [ ! -d $(DIR_SECRETS) ] || [ -z "$$(ls -A $(DIR_SECRETS))" ] ; then \
-		$(MAKE) .secret; \
+		$(MAKE) --no-print-directory .secret; \
 	fi
 
 #### CLEANUP ####
