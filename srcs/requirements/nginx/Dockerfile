@@ -1,10 +1,10 @@
-FROM debian:bookworm
+FROM debian:bullseye
 
 ARG USER_NAME=www-data
 ARG USER_UID=1000
 ARG USER_GID=1000
-ARG NGINX_VERSION=1.22.1-9
-ARG CURL_VERSION=7.88.1-10+deb12u8
+ARG NGINX_VERSION=1.18.0-6.1+deb11u3
+ARG CURL_VERSION=7.74.0-1.3+deb11u14
 
 RUN set -eux \
 	&& groupmod --gid ${USER_GID} ${USER_NAME} \

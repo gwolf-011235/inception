@@ -1,9 +1,9 @@
-FROM debian:bookworm
+FROM debian:bullseye
 
 ARG USER_NAME=mysql
 ARG USER_UID=1000
 ARG USER_GID=1000
-ARG MARIADB_VERSION=1:10.11.6-0+deb12u1
+ARG MARIADB_VERSION=1:10.5.26-0+deb11u2
 
 RUN set -eux \
 	&& groupadd --system --gid ${USER_GID} ${USER_NAME} \
