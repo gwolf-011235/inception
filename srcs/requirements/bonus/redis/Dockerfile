@@ -1,9 +1,9 @@
-FROM debian:bookworm
+FROM debian:bullseye
 
 ARG USER_NAME=redis
 ARG USER_UID=1000
 ARG USER_GID=1000
-ARG REDIS_VERSION=5:7.0.15-1~deb12u3
+ARG REDIS_VERSION=5:6.0.16-1+deb11u5
 
 RUN set -eux \
 	&& groupadd --system --gid ${USER_GID} ${USER_NAME} \

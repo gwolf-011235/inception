@@ -1,6 +1,6 @@
-FROM debian:bookworm
+FROM debian:bullseye
 
-ARG CURL_VERSION=7.88.1-10+deb12u8
+ARG CURL_VERSION=7.74.0-1.3+deb11u14
 ARG CADVISOR_VERSION=0.49.2
 
 RUN set -eux \

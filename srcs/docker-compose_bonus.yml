@@ -49,7 +49,7 @@ services:
         condition: service_healthy
     configs:
       - source: fpm_config
-        target: /etc/php/8.2/fpm/pool.d/www.conf
+        target: /etc/php/7.4/fpm/pool.d/www.conf
     volumes:
       - wordpress_data:/var/www/html
     networks:
@@ -134,7 +134,7 @@ services:
         condition: service_healthy
     configs:
       - source: adminer_config
-        target: /etc/php/8.2/fpm/pool.d/www.conf
+        target: /etc/php/7.4/fpm/pool.d/www.conf
       - source: adminer-index.php
         target: /var/www/html/index.php
     networks:

@@ -1,10 +1,10 @@
-FROM debian:bookworm
+FROM debian:bullseye
 
 ARG USER_NAME=ftp
 ARG USER_UID=1000
 ARG USER_GID=1000
-ARG VSFTPD_VERSION=3.0.3-13+b2
-ARG DB_UTIL_VERSION=5.3.2
+ARG VSFTPD_VERSION=3.0.3-12+b1
+ARG DB_UTIL_VERSION=5.3.1+nmu1
 
 RUN set -eux \
 	&& groupadd --system --gid ${USER_GID} ${USER_NAME} \
